@@ -1,5 +1,7 @@
 plugins {
     id 'java-library'
+    id 'idea'
+    id 'maven-publish'
     id 'dev.architectury.loom' version '1.4.+'
     id 'org.ajoberstar.reckon' version '0.13.0'
 }
@@ -36,10 +38,10 @@ repositories {
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:1.20.1"
+    minecraft "com.mojang:minecraft:${mc_version}"
     mappings loom.officialMojangMappings()
 
-    forge "net.minecraftforge:forge:1.20.1-47.2.19"
+    forge "net.minecraftforge:forge:${mc_version}-${forge_version}"
 }
 
 tasks.named('processResources', ProcessResources) {

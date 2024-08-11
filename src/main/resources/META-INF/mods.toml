@@ -17,7 +17,8 @@ displayTest="IGNORE_ALL_VERSION"
 [[dependencies.presencefootsteps]]
 modId = "forge"
 mandatory = true
-versionRange = "[47.2.19,)"
+# if you lock into 47.2.* then neoforge will not load
+versionRange = "[47.1.47,)"
 ordering = "NONE"
 side = "CLIENT"
 
