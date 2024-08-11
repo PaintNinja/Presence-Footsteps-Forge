@@ -1,7 +1,7 @@
 plugins {
     id 'java-library'
     id 'dev.architectury.loom' version '1.4.+'
-    id 'org.ajoberstar.reckon' version '0.13.0'
+  //  id 'org.ajoberstar.reckon' version '0.13.0'
 }
 
 java {
@@ -24,11 +24,11 @@ loom {
 
     silentMojangMappingsLicense()
 }
-
+/*
 reckon {
     scopeFromProp()
     stageFromProp('beta', 'rc', 'final')
-}
+}*/
 
 repositories {
     maven { name 'minelp'; url 'https://repo.minelittlepony-mod.com/maven/snapshot' }
@@ -39,7 +39,7 @@ dependencies {
     minecraft "com.mojang:minecraft:1.20.1"
     mappings loom.officialMojangMappings()
 
-    forge "net.minecraftforge:forge:1.20.1-47.2.19"
+    forge "net.minecraftforge:forge:1.20.1-47.1.47"
 }
 
 tasks.named('processResources', ProcessResources) {
