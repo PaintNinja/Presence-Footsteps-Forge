@@ -13,9 +13,6 @@ java {
     withSourcesJar()
 }
 
-// NOTE: its not ported to neoforge yet, but its cross compatible now
-version = "neoforge-${mc_version}-${mod_version}"
-
 group = project.group
 description = project.displayname
 base.archivesName = project.name
