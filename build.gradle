@@ -3,12 +3,14 @@ plugins {
     id 'idea'
     id 'maven-publish'
     id 'dev.architectury.loom' version '1.4.+'
+    id 'org.ajoberstar.reckon' version '0.13.0'
 }
 
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
+    withSourcesJar()
 }
 
 // NOTE: its not ported to neoforge yet, but its cross compatible now
@@ -16,9 +18,7 @@ version = "neoforge-${mc_version}-${mod_version}"
 
 group = project.group
 description = project.displayname
-base {
-    archivesName = "PresenceFootsteps"
-}
+base.archivesName = project.name
 
 loom {
     mixin.defaultRefmapName = 'presencefootsteps.mixin.refmap.json'
@@ -30,8 +30,14 @@ loom {
     silentMojangMappingsLicense()
 }
 
-repositories {
+reckon {
+    scopeFromProp()
+    stageFromProp('beta', 'rc', 'final')
+}
 
+repositories {
+    maven { name 'minelp'; url 'https://repo.minelittlepony-mod.com/maven/snapshot' }
+    maven { name 'minelp-release'; url 'https://repo.minelittlepony-mod.com/maven/release' }
 }
 
 dependencies {
@@ -39,19 +45,6 @@ dependencies {
     mappings loom.officialMojangMappings()
 
     forge "net.minecraftforge:forge:${mc_version}-${forge_version}"
-}
-
-publishing {
-    publications {
-        register('mavenJava', MavenPublication) {
-            artifact jar
-        }
-    }
-    repositories {
-        maven {
-            url "file://${project.projectDir}/mcmodsrepo"
-        }
-    }
 }
 
 tasks.named('processResources', ProcessResources) {
