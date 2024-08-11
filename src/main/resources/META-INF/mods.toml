@@ -5,7 +5,7 @@ issueTrackerURL = "https://github.com/PaintNinja/Presence-Footsteps-Forge"
 
 [[mods]]
 modId = "presencefootsteps"
-version = "1.20.1-1.9.1-beta.1"
+version = "1.20.1-1.9.1"
 displayName = "Presence Footsteps (Forge)"
 displayURL = "https://www.curseforge.com/minecraft/mc-mods/presence-footsteps-forge"
 updateJSONURL = "https://forge.curseupdate.com/433068/presencefootsteps"
@@ -17,6 +17,7 @@ displayTest="IGNORE_ALL_VERSION"
 [[dependencies.presencefootsteps]]
 modId = "forge"
 mandatory = true
+# if you lock into 47.2.* then neoforge will not load
 versionRange = "[47.1.47,)"
 ordering = "NONE"
 side = "CLIENT"

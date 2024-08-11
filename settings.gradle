@@ -16,4 +16,3 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
-rootProject.name = 'PresenceFootsteps'
