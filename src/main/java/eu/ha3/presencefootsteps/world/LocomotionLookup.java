@@ -35,7 +35,7 @@ public class LocomotionLookup implements Index<Entity, Locomotion> {
 
     @Override
     public void add(String key, String value) {
-        ResourceLocation id = new ResourceLocation(key);
+        ResourceLocation id = ResourceLocation.parse(key);
 
         if (!BuiltInRegistries.ENTITY_TYPE.containsKey(id)) {
             PresenceFootsteps.logger.warn("Locomotion registered for unknown entity type " + id);

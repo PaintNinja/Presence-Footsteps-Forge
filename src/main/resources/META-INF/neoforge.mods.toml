@@ -1,0 +1,27 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="MIT"
+issueTrackerURL = "https://github.com/PaintNinja/Presence-Footsteps-Forge"
+[[mods]] #mandatory
+modId="presencefootsteps" #mandatory
+version="1.21.1-1.12.0-beta.1" #mandatory
+displayName = "Presence Footsteps (Forge)"
+displayURL = "https://www.curseforge.com/minecraft/mc-mods/presence-footsteps-forge"
+updateJSONURL = "https://forge.curseupdate.com/433068/presencefootsteps"
+logoFile="presencefootsteps_logo.png"
+authors = "Hurricaaane, Sollace, Paint_Ninja"
+description='''An overly complicated sound mod, ported to Forge.'''
+[[mixins]]
+config="presencefootsteps.mixins.json"
+[[dependencies.presencefootsteps]] #optional
+modId="neoforge" #mandatory
+type="required" #mandatory
+versionRange="[21,)" #mandatory
+ordering="NONE"
+side="CLIENT"
+[[dependencies.presencefootsteps]]
+modId="minecraft"
+type="required"
+versionRange="[1.21.1,1.22)"
+ordering="NONE"
+side="CLIENT"

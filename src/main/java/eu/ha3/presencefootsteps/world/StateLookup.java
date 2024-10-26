@@ -86,7 +86,8 @@ public record StateLookup(Map<String, Bucket> substrates) implements Lookup<Bloc
                                 if (association.isResult()) {
                                     writer.field(substrate, association.raw());
                                 }
-                            } catch (IOException ignore) {}
+                            } catch (IOException ignore) {
+                            }
                         });
                     });
                 });
@@ -122,7 +123,8 @@ public record StateLookup(Map<String, Bucket> substrates) implements Lookup<Bloc
 
         Bucket EMPTY = state -> Key.NULL;
 
-        default void add(Key key) {}
+        default void add(Key key) {
+        }
 
         Key get(BlockState state);
 
@@ -131,9 +133,9 @@ public record StateLookup(Map<String, Bucket> substrates) implements Lookup<Bloc
         }
 
         record Substrate(
-                KeyList wildcards,
-                Map<ResourceLocation, Bucket> blocks,
-                Map<ResourceLocation, Bucket> tags) implements Bucket {
+            KeyList wildcards,
+            Map<ResourceLocation, Bucket> blocks,
+            Map<ResourceLocation, Bucket> tags) implements Bucket {
 
             Substrate(String substrate) {
                 this(new KeyList(), new Object2ObjectLinkedOpenHashMap<>(), new Object2ObjectLinkedOpenHashMap<>());
@@ -153,8 +155,8 @@ public record StateLookup(Map<String, Bucket> substrates) implements Lookup<Bloc
                 final Key association = getTile(state).get(state);
 
                 return association == Key.NULL
-                        ? wildcards.findMatch(state)
-                        : association;
+                    ? wildcards.findMatch(state)
+                    : association;
             }
 
             @Override
@@ -229,15 +231,15 @@ public record StateLookup(Map<String, Bucket> substrates) implements Lookup<Bloc
     }
 
     private record Key(
-            ResourceLocation identifier,
-            String substrate,
-            Set<Attribute> properties,
-            SoundsKey value,
-            boolean empty,
-            boolean isTag,
-            boolean isWildcard
+        ResourceLocation identifier,
+        String substrate,
+        Set<Attribute> properties,
+        SoundsKey value,
+        boolean empty,
+        boolean isTag,
+        boolean isWildcard
     ) {
-        public static final Key NULL = new Key(new ResourceLocation("air"), "", ObjectSets.emptySet(), SoundsKey.UNASSIGNED, true, false, false);
+        public static final Key NULL = new Key(ResourceLocation.withDefaultNamespace("air"), "", ObjectSets.emptySet(), SoundsKey.UNASSIGNED, true, false, false);
 
         public static Key of(String key, SoundsKey value) {
             final boolean isTag = key.indexOf('#') == 0;
@@ -248,14 +250,14 @@ public record StateLookup(Map<String, Bucket> substrates) implements Lookup<Bloc
 
             final String id = key.split("[\\.\\[]")[0];
             final boolean isWildcard = id.indexOf('*') == 0;
-            ResourceLocation identifier = new ResourceLocation("air");
+            ResourceLocation identifier = ResourceLocation.withDefaultNamespace("air");
 
             if (!isWildcard) {
                 if (id.indexOf('^') > -1) {
-                    identifier = new ResourceLocation(id.split("\\^")[0]);
+                    identifier = ResourceLocation.parse(id.split("\\^")[0]);
                     PresenceFootsteps.logger.warn("Metadata entry for " + key + "=" + value.raw() + " was ignored");
                 } else {
-                    identifier = new ResourceLocation(id);
+                    identifier = ResourceLocation.parse(id);
                 }
 
                 if (!isTag && !BuiltInRegistries.BLOCK.containsKey(identifier)) {
@@ -273,13 +275,13 @@ public record StateLookup(Map<String, Bucket> substrates) implements Lookup<Bloc
             }
 
             final Set<Attribute> properties = ObjectArrayList.of(
-                         key.replace("[", "")
-                            .replace("]", "")
-                            .split(","))
-                    .stream()
-                    .filter(line -> line.indexOf('=') > -1)
-                    .map(Attribute::new)
-                    .collect(ObjectOpenHashSet.toSet());
+                    key.replace("[", "")
+                        .replace("]", "")
+                        .split(","))
+                .stream()
+                .filter(line -> line.indexOf('=') > -1)
+                .map(Attribute::new)
+                .collect(ObjectOpenHashSet.toSet());
 
             final boolean empty = properties.isEmpty();
 
@@ -312,10 +314,10 @@ public record StateLookup(Map<String, Bucket> substrates) implements Lookup<Bloc
         @Override
         public String toString() {
             return (isTag ? "#" : "")
-                    + identifier
-                    + "[" + properties.stream().map(Attribute::toString).collect(Collectors.joining()) + "]"
-                    + "." + substrate
-                    + "=" + value;
+                + identifier
+                + "[" + properties.stream().map(Attribute::toString).collect(Collectors.joining()) + "]"
+                + "." + substrate
+                + "=" + value;
         }
 
         @Override
@@ -330,11 +332,11 @@ public record StateLookup(Map<String, Bucket> substrates) implements Lookup<Bloc
 
         private boolean equals(Key other) {
             return isTag == other.isTag
-                    && isWildcard == other.isWildcard
-                    && empty == other.empty
-                    && Objects.equals(identifier, other.identifier)
-                    && Objects.equals(substrate, other.substrate)
-                    && Objects.equals(properties, other.properties);
+                && isWildcard == other.isWildcard
+                && empty == other.empty
+                && Objects.equals(identifier, other.identifier)
+                && Objects.equals(substrate, other.substrate)
+                && Objects.equals(properties, other.properties);
         }
 
         private record Attribute(String name, String value) {

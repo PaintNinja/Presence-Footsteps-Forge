@@ -2,6 +2,7 @@ package eu.ha3.presencefootsteps.sound;
 
 import java.io.IOException;
 import java.util.Map;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.sounds.SoundEvent;
@@ -26,30 +27,30 @@ import eu.ha3.presencefootsteps.world.Lookup;
 import eu.ha3.presencefootsteps.world.PrimitiveLookup;
 import eu.ha3.presencefootsteps.world.StateLookup;
 
-public record Isolator (
-        Variator variator,
-        Index<Entity, Locomotion> locomotions,
-        HeuristicStateLookup heuristics,
-        Lookup<EntityType<?>> golems,
-        Lookup<BlockState> blocks,
-        Lookup<SoundEvent> primitives,
-        AcousticLibrary acoustics
-    ) implements Reportable {
-    private static final ResourceLocation BLOCK_MAP = new ResourceLocation("presencefootsteps", "config/blockmap.json");
-    private static final ResourceLocation GOLEM_MAP = new ResourceLocation("presencefootsteps", "config/golemmap.json");
-    private static final ResourceLocation LOCOMOTION_MAP = new ResourceLocation("presencefootsteps", "config/locomotionmap.json");
-    private static final ResourceLocation PRIMITIVE_MAP = new ResourceLocation("presencefootsteps", "config/primitivemap.json");
-    public static final ResourceLocation ACOUSTICS = new ResourceLocation("presencefootsteps", "config/acoustics.json");
-    private static final ResourceLocation VARIATOR = new ResourceLocation("presencefootsteps", "config/variator.json");
+public record Isolator(
+    Variator variator,
+    Index<Entity, Locomotion> locomotions,
+    HeuristicStateLookup heuristics,
+    Lookup<EntityType<?>> golems,
+    Lookup<BlockState> blocks,
+    Lookup<SoundEvent> primitives,
+    AcousticLibrary acoustics
+) implements Reportable {
+    private static final ResourceLocation BLOCK_MAP = ResourceLocation.fromNamespaceAndPath("presencefootsteps", "config/blockmap.json");
+    private static final ResourceLocation GOLEM_MAP = ResourceLocation.fromNamespaceAndPath("presencefootsteps", "config/golemmap.json");
+    private static final ResourceLocation LOCOMOTION_MAP = ResourceLocation.fromNamespaceAndPath("presencefootsteps", "config/locomotionmap.json");
+    private static final ResourceLocation PRIMITIVE_MAP = ResourceLocation.fromNamespaceAndPath("presencefootsteps", "config/primitivemap.json");
+    public static final ResourceLocation ACOUSTICS = ResourceLocation.fromNamespaceAndPath("presencefootsteps", "config/acoustics.json");
+    private static final ResourceLocation VARIATOR = ResourceLocation.fromNamespaceAndPath("presencefootsteps", "config/variator.json");
 
     public Isolator(SoundEngine engine) {
         this(new Variator(),
-                new LocomotionLookup(engine.getConfig()),
-                new HeuristicStateLookup(),
-                new GolemLookup(),
-                new StateLookup(),
-                new PrimitiveLookup(),
-                new AcousticsPlayer(new DelayedSoundPlayer(engine.soundPlayer))
+            new LocomotionLookup(engine.getConfig()),
+            new HeuristicStateLookup(),
+            new GolemLookup(),
+            new StateLookup(),
+            new PrimitiveLookup(),
+            new AcousticsPlayer(new DelayedSoundPlayer(engine.soundPlayer))
         );
     }
 

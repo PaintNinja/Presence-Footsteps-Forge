@@ -1,5 +1,8 @@
 package eu.ha3.presencefootsteps.sound.generator;
 
+import eu.ha3.presencefootsteps.mixins.EntityAttachementsAccessor;
+import net.minecraft.world.entity.EntityAttachment;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import eu.ha3.presencefootsteps.config.Variator;
@@ -19,6 +22,8 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
+
+import java.util.List;
 
 class TerrestrialStepSoundGenerator implements StepSoundGenerator {
     // Footsteps
@@ -92,7 +97,7 @@ class TerrestrialStepSoundGenerator implements StepSoundGenerator {
         if (now - immobilePlayback > immobileInterval) {
             immobilePlayback = now;
             immobileInterval = (int) Math.floor(
-                    (Math.random() * (variator.IMOBILE_INTERVAL_MAX - variator.IMOBILE_INTERVAL_MIN)) + variator.IMOBILE_INTERVAL_MIN);
+                (Math.random() * (variator.IMOBILE_INTERVAL_MAX - variator.IMOBILE_INTERVAL_MIN)) + variator.IMOBILE_INTERVAL_MIN);
             return true;
         }
         return false;
@@ -114,7 +119,7 @@ class TerrestrialStepSoundGenerator implements StepSoundGenerator {
 
     protected void simulateFootsteps() {
         if (!(entity instanceof Player)) {
-            entity.moveDist += (float)Math.sqrt(motionTracker.getHorizontalSpeed()) * 0.6f;
+            entity.moveDist += (float) Math.sqrt(motionTracker.getHorizontalSpeed()) * 0.6f;
         }
 
         final float distanceReference = entity.moveDist;
@@ -307,9 +312,13 @@ class TerrestrialStepSoundGenerator implements StepSoundGenerator {
             return;
         }
 
+        EntityAttachementsAccessor attachments = (EntityAttachementsAccessor) entity.getType().getDimensions().attachments();
+        List<Vec3> vehicleAttachements = attachments.getMap().get(EntityAttachment.VEHICLE);
         Association assos = associations.findAssociation(BlockPos.containing(
             entity.getX(),
-            entity.getY() - 0.1D - (entity.isPassenger() ? entity.getMyRidingOffset(entity.getVehicle()) : 0) - (entity.onGround() ? 0 : 0.25D),
+            entity.getY() - 0.1D - (entity.isPassenger() && vehicleAttachements != null
+                && !vehicleAttachements.isEmpty() ?
+                entity.getAgeScale() * -vehicleAttachements.getFirst().y : 0) - (entity.onGround() ? 0 : 0.25D),
             entity.getZ()
         ), Solver.MESSY_FOLIAGE_STRATEGY);
 
@@ -326,7 +335,7 @@ class TerrestrialStepSoundGenerator implements StepSoundGenerator {
     protected void playStep(Association association, State eventType) {
         if (engine.getConfig().getEnabledFootwear()) {
             if (entity.getItemBySlot(EquipmentSlot.FEET).getItem() instanceof ArmorItem bootItem) {
-                SoundsKey bootSound = engine.getIsolator().primitives().getAssociation(bootItem.getEquipSound(), Substrates.DEFAULT);
+                SoundsKey bootSound = engine.getIsolator().primitives().getAssociation(bootItem.getEquipSound().value(), Substrates.DEFAULT);
                 if (bootSound.isEmitter()) {
                     engine.getIsolator().acoustics().playStep(association, eventType, Options.singular("volume_percentage", 0.5F));
                     engine.getIsolator().acoustics().playAcoustic(entity, bootSound, eventType, Options.EMPTY);
