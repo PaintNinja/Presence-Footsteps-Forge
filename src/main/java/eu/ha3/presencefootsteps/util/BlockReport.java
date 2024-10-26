@@ -14,7 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.SoundType;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import com.google.gson.stream.JsonWriter;
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.neoforged.fml.loading.FMLPaths;
 
 public interface BlockReport {
     static CompletableFuture<?> execute(Reportable reportable, String baseName, boolean full) {

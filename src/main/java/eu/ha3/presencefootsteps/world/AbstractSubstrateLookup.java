@@ -49,7 +49,7 @@ abstract class AbstractSubstrateLookup<T> implements Lookup<T> {
 
         substrates
             .computeIfAbsent(substrate, s -> new Object2ObjectLinkedOpenHashMap<>())
-            .put(new ResourceLocation(primitive), SoundsKey.of(value));
+            .put(ResourceLocation.parse(primitive), SoundsKey.of(value));
     }
 
     @Override
