@@ -1,10 +1,9 @@
 {
     "required": true,
-    "minVersion": "0.8.5",
+    "minVersion": "0.8.7",
     "package": "eu.ha3.presencefootsteps.mixins",
     "plugin" : "eu.ha3.presencefootsteps.compat.PFMixinPlugin",
-    "refmap": "presencefootsteps.mixin.refmap.json",
-    "compatibilityLevel": "JAVA_17",
+    "compatibilityLevel": "JAVA_21",
     "client": [
       "MAbstractBlock",
       "MStairsBlock",

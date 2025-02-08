@@ -13,8 +13,7 @@ public class ForgeEventSubscriber {
     private static final PresenceFootsteps presenceFootsteps = PresenceFootsteps.getInstance();
 
     @SubscribeEvent
-    public static void onClientTick(final TickEvent.ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.END) return;
+    public static void onClientTick(final TickEvent.ClientTickEvent.Post event) {
         final Minecraft client = Minecraft.getInstance();
         Optional.ofNullable(client.player).filter(e -> !e.isRemoved()).ifPresent(cameraEntity -> {
             // TODO: GUIs

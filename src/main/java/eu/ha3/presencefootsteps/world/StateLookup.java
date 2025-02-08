@@ -237,7 +237,7 @@ public record StateLookup(Map<String, Bucket> substrates) implements Lookup<Bloc
             boolean isTag,
             boolean isWildcard
     ) {
-        public static final Key NULL = new Key(new ResourceLocation("air"), "", ObjectSets.emptySet(), SoundsKey.UNASSIGNED, true, false, false);
+        public static final Key NULL = new Key(ResourceLocation.withDefaultNamespace("air"), "", ObjectSets.emptySet(), SoundsKey.UNASSIGNED, true, false, false);
 
         public static Key of(String key, SoundsKey value) {
             final boolean isTag = key.indexOf('#') == 0;
@@ -248,14 +248,14 @@ public record StateLookup(Map<String, Bucket> substrates) implements Lookup<Bloc
 
             final String id = key.split("[\\.\\[]")[0];
             final boolean isWildcard = id.indexOf('*') == 0;
-            ResourceLocation identifier = new ResourceLocation("air");
+            ResourceLocation identifier = ResourceLocation.withDefaultNamespace("air");
 
             if (!isWildcard) {
                 if (id.indexOf('^') > -1) {
-                    identifier = new ResourceLocation(id.split("\\^")[0]);
+                    identifier = ResourceLocation.parse(id.split("\\^")[0]);
                     PresenceFootsteps.logger.warn("Metadata entry for " + key + "=" + value.raw() + " was ignored");
                 } else {
-                    identifier = new ResourceLocation(id);
+                    identifier = ResourceLocation.parse(id);
                 }
 
                 if (!isTag && !BuiltInRegistries.BLOCK.containsKey(identifier)) {

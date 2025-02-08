@@ -35,12 +35,12 @@ public record Isolator (
         Lookup<SoundEvent> primitives,
         AcousticLibrary acoustics
     ) implements Reportable {
-    private static final ResourceLocation BLOCK_MAP = new ResourceLocation("presencefootsteps", "config/blockmap.json");
-    private static final ResourceLocation GOLEM_MAP = new ResourceLocation("presencefootsteps", "config/golemmap.json");
-    private static final ResourceLocation LOCOMOTION_MAP = new ResourceLocation("presencefootsteps", "config/locomotionmap.json");
-    private static final ResourceLocation PRIMITIVE_MAP = new ResourceLocation("presencefootsteps", "config/primitivemap.json");
-    public static final ResourceLocation ACOUSTICS = new ResourceLocation("presencefootsteps", "config/acoustics.json");
-    private static final ResourceLocation VARIATOR = new ResourceLocation("presencefootsteps", "config/variator.json");
+    private static final ResourceLocation BLOCK_MAP = ResourceLocation.fromNamespaceAndPath("presencefootsteps", "config/blockmap.json");
+    private static final ResourceLocation GOLEM_MAP = ResourceLocation.fromNamespaceAndPath("presencefootsteps", "config/golemmap.json");
+    private static final ResourceLocation LOCOMOTION_MAP = ResourceLocation.fromNamespaceAndPath("presencefootsteps", "config/locomotionmap.json");
+    private static final ResourceLocation PRIMITIVE_MAP = ResourceLocation.fromNamespaceAndPath("presencefootsteps", "config/primitivemap.json");
+    public static final ResourceLocation ACOUSTICS = ResourceLocation.fromNamespaceAndPath("presencefootsteps", "config/acoustics.json");
+    private static final ResourceLocation VARIATOR = ResourceLocation.fromNamespaceAndPath("presencefootsteps", "config/variator.json");
 
     public Isolator(SoundEngine engine) {
         this(new Variator(),

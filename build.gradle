@@ -7,13 +7,15 @@ plugins {
 group = project.group
 description = project.displayname
 base.archivesName = project.name
-version = '1.20.4-1.12.0-beta.1'
+version = '1.21.1-1.12.0-beta.1'
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 minecraft {
-    mappings channel: 'official', version: '1.20.4'
+    mappings channel: 'official', version: '1.21.1'
     copyIdeResources = true
+
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     runs {
         client {
@@ -24,12 +26,8 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.20.4-49.0.39'
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-}
-
-tasks.named('jar', Jar) {
-    finalizedBy 'reobfJar'
+    minecraft 'net.minecraftforge:forge:1.21.1-52.0.47'
+    annotationProcessor 'org.spongepowered:mixin:0.8.7:processor'
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -37,7 +35,13 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 mixin {
-    add sourceSets.main, 'presencefootsteps.mixin.refmap.json'
+    config 'presencefootsteps.mixin.json'
+}
+
+tasks.named('jar', Jar) {
+    manifest {
+        attributes(['MixinConfigs': 'presencefootsteps.mixin.json'])
+    }
 }
 
 sourceSets.each {

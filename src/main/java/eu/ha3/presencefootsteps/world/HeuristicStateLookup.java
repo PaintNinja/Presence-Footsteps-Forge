@@ -1,8 +1,11 @@
 package eu.ha3.presencefootsteps.world;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -14,7 +17,7 @@ public class HeuristicStateLookup {
         String id = BuiltInRegistries.BLOCK.getKey(block).getPath();
 
         for (String part : id.split("_")) {
-            Optional<Block> leavesBlock = BuiltInRegistries.BLOCK.getOptional(new ResourceLocation(part + "_leaves"));
+            Optional<Block> leavesBlock = BuiltInRegistries.BLOCK.getOptional(ResourceLocation.parse(part + "_leaves"));
             if (leavesBlock.isPresent()) {
                 return leavesBlock;
             }
@@ -25,7 +28,8 @@ public class HeuristicStateLookup {
 
     @Nullable
     public Block getMostSimilar(Block block) {
-        if (block.getSoundType(block.defaultBlockState()).getStepSound() == SoundEvents.GRASS_STEP) {
+        LocalPlayer player = Objects.requireNonNull(Minecraft.getInstance().player);
+        if (block.getSoundType(block.defaultBlockState(), player.level(), player.blockPosition(), player).getStepSound() == SoundEvents.GRASS_STEP) {
             return leafBlockCache.apply(block).orElse(null);
         }
         return null;
