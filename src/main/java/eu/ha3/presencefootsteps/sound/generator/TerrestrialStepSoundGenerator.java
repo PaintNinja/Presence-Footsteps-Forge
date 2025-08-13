@@ -1,6 +1,7 @@
 package eu.ha3.presencefootsteps.sound.generator;
 
 import net.minecraft.world.entity.EntityAttachment;
+import net.minecraft.world.entity.EntityAttachments;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -311,7 +312,7 @@ class TerrestrialStepSoundGenerator implements StepSoundGenerator {
             return;
         }
 
-        var attachments = entity.getType().getDimensions().attachments();
+        EntityAttachments attachments = entity.getType().getDimensions().attachments();
         List<Vec3> vehicleAttachements = attachments.attachments.get(EntityAttachment.VEHICLE);
         Association assos = associations.findAssociation(BlockPos.containing(
             entity.getX(),

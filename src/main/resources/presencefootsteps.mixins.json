@@ -1,6 +1,6 @@
 {
     "required": true,
-    "minVersion": "0.8.7",
+    "minVersion": "0.8.6",
     "package": "eu.ha3.presencefootsteps.mixins",
     "plugin" : "eu.ha3.presencefootsteps.compat.PFMixinPlugin",
     "compatibilityLevel": "JAVA_21",

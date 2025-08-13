@@ -5,20 +5,20 @@ import eu.ha3.presencefootsteps.PFConfig;
 import eu.ha3.presencefootsteps.PresenceFootsteps;
 import eu.ha3.presencefootsteps.sound.SoundEngine;
 import net.minecraft.client.KeyMapping;
-import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
+import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.common.util.Lazy;
 import org.lwjgl.glfw.GLFW;
 
 import java.nio.file.Path;
 
 import static eu.ha3.presencefootsteps.PresenceFootsteps.logger;
 
-@Mod.EventBusSubscriber(modid = PresenceFootsteps.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = PresenceFootsteps.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class ModLifecycleEventSubscriber {
     private static final PresenceFootsteps presenceFootsteps = PresenceFootsteps.getInstance();
 
@@ -43,9 +43,4 @@ public class ModLifecycleEventSubscriber {
 
         event.register(presenceFootsteps.keyBinding.get());
     }
-
-//    @SubscribeEvent
-//    public static void onInitializeClient(final FMLClientSetupEvent event) {
-//        presenceFootsteps.debugHud = new PFDebugHud(presenceFootsteps.engine);
-//    }
 }
