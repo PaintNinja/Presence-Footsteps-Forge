@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
@@ -28,10 +27,12 @@ public class BiomeVarianceLookup implements Index<Identifier, BiomeVarianceLooku
     }
 
     @Override
-    public void add(String key, JsonElement value) {
-        BiomeVariance.CODEC.decode(JsonOps.INSTANCE, value).result().map(Pair::getFirst).ifPresent(i -> {
-            entries.put(Identifier.of(key), i);
-        });
+    public Loader createLoader() {
+        return (key, value) -> {
+            BiomeVariance.CODEC.decode(JsonOps.INSTANCE, value).result().map(Pair::getFirst).ifPresent(i -> {
+                entries.put(Identifier.of(key), i);
+            });
+        };
     }
 
     @Override

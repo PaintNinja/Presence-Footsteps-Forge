@@ -83,10 +83,10 @@ public record Isolator (
             return lookup.load(entries, globalBlocks()) ? lookup : null;
         }));
         hasConfigurations |= !blocks.isEmpty();
-        hasConfigurations |= ResourceUtils.forEach(BIOME_MAP, manager, biomes()::load);
+        hasConfigurations |= ResourceUtils.forEach(BIOME_MAP, manager, biomes().createLoader());
         hasConfigurations |= golems().load(ResourceUtils.load(GOLEM_MAP, manager, GolemLookup::new));
         hasConfigurations |= primitives().load(ResourceUtils.load(PRIMITIVE_MAP, manager, PrimitiveLookup::new));
-        hasConfigurations |= ResourceUtils.forEach(LOCOMOTION_MAP, manager, locomotions()::load);
+        hasConfigurations |= ResourceUtils.forEach(LOCOMOTION_MAP, manager, locomotions().createLoader());
         var acoustics = ResourceUtils.loadAll(ACOUSTICS, manager, Acoustic.CODEC);
         hasConfigurations |= !acoustics.isEmpty();
         acoustics.forEach((id, acoustic) -> {
