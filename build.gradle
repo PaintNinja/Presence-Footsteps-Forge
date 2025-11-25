@@ -23,10 +23,6 @@ group = project.group
 description = project.displayname
 archivesBaseName = project.name
 
-loom {
-    mixin.defaultRefmapName = 'presencefootsteps.mixin.refmap.json'
-}
-
 reckon {
     scopeFromProp()
     stageFromProp('beta', 'rc', 'final')
