@@ -17,7 +17,10 @@ public record Range (float min, float max) {
         PERCENTAGE_CODEC.fieldOf("max").forGetter(Range::max)
     ).apply(i, Range::new));
     private static final Codec<Range> POINT_CODEC = PERCENTAGE_CODEC.xmap(Range::exactly, Range::min);
-    public static final Codec<Range> CODEC = Codec.xor(POINT_CODEC, RANGE_CODEC).xmap(either -> Either.unwrap(either), i -> MathHelper.approximatelyEquals(i.min(), i.max()) ? Either.left(i) : Either.right(i));
+    public static final Codec<Range> CODEC = Codec.xor(POINT_CODEC, RANGE_CODEC).xmap(
+            Either::unwrap,
+            i -> MathHelper.approximatelyEquals(i.min(), i.max()) ? Either.left(i) : Either.right(i)
+    );
 
     public static final Range DEFAULT = exactly(1);
 
