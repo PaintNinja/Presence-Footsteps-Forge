@@ -28,7 +28,7 @@ public interface Acoustic {
     MapCodec<Acoustic> MAP_CODEC = Codec.STRING.dispatchMap(Acoustic::type, TYPES::get);
     Codec<Acoustic> CODEC = Codec.xor(Codec.lazyInitialized(() -> SimultaneousAcoustic.CODEC.xmap(i -> (Acoustic)i, i-> (SimultaneousAcoustic)i)), MAP_CODEC.codec()).xmap(
             either -> Either.unwrap(either),
-            acoustic -> acoustic.type() == "simultaneous" ? Either.left(acoustic) : Either.right(acoustic)
+            acoustic -> Acoustic.SIMULTANEOUS.contentEquals(acoustic.type()) ? Either.left(acoustic) : Either.right(acoustic)
     );
     String BASIC = register("basic", VaryingAcoustic.CODEC);
     String EVENTS = register("events", EventSelectorAcoustics.CODEC);
@@ -78,11 +78,11 @@ public interface Acoustic {
         }
 
         if (unsolved.isJsonArray()) {
-            return "simultaneous";
+            return SIMULTANEOUS;
         }
 
         if (unsolved.isJsonPrimitive() && unsolved.getAsJsonPrimitive().isString()) {
-            return "basic";
+            return BASIC;
         }
 
         return "";

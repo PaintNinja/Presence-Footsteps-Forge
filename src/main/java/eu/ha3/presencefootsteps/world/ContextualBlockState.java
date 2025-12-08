@@ -12,7 +12,6 @@ public record ContextualBlockState(EntityType<?> type, BlockState state) {
                     state -> new ContextualBlockState(entityType, state)
     ));
 
-
     public static ContextualBlockState of(EntityType<?> type, BlockState state) {
         return CACHE.apply(type).apply(state);
     }

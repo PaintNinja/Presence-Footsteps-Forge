@@ -18,8 +18,6 @@ import net.minecraft.world.level.block.SoundType;
 import java.io.IOException;
 import java.util.Map;
 
-import com.google.gson.JsonElement;
-
 public class LocomotionLookup implements Index<Entity, Locomotion> {
     private final Map<Identifier, Locomotion> values = new Object2ObjectLinkedOpenHashMap<>();
 
@@ -38,14 +36,16 @@ public class LocomotionLookup implements Index<Entity, Locomotion> {
     }
 
     @Override
-    public void add(String key, JsonElement value) {
-        Identifier id = Identifier.parse(key);
+    public Loader createLoader() {
+        return (key, value) -> {
+            Identifier id = Identifier.parse(key);
 
-        if (!BuiltInRegistries.ENTITY_TYPE.containsKey(id)) {
-            PresenceFootsteps.logger.warn("Locomotion registered for unknown entity type " + id);
-        }
+            if (!BuiltInRegistries.ENTITY_TYPE.containsKey(id)) {
+                PresenceFootsteps.logger.warn("Locomotion registered for unknown entity type " + id);
+            }
 
-        values.put(id, Locomotion.byName(value.getAsString().toUpperCase()));
+            values.put(id, Locomotion.byName(value.getAsString().toUpperCase()));
+        };
     }
 
     @Override
