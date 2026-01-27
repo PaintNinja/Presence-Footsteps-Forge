@@ -14,7 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.SoundType;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import com.google.gson.stream.JsonWriter;
-import com.minelittlepony.common.util.GamePaths;
+import net.minecraftforge.fml.loading.FMLPaths;
 
 public interface BlockReport {
     static CompletableFuture<?> execute(Reportable reportable, String baseName, boolean full) {
@@ -30,7 +30,7 @@ public interface BlockReport {
         ChatComponent hud = client.gui.getChat();
         return CompletableFuture.supplyAsync(() -> {
             try {
-                Path loc = getUniqueFileName(GamePaths.getGameDirectory().resolve("presencefootsteps"), baseName, ext);
+                Path loc = getUniqueFileName(FMLPaths.GAMEDIR.get().resolve("presencefootsteps"), baseName, ext);
                 action.accept(loc);
                 return loc;
             } catch (Exception e) {
