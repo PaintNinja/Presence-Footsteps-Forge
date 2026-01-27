@@ -12,10 +12,9 @@ import eu.ha3.presencefootsteps.sound.Options;
 import eu.ha3.presencefootsteps.sound.State;
 import eu.ha3.presencefootsteps.sound.player.SoundPlayer;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.entity.LivingEntity;
-
 import java.util.Iterator;
 import java.util.List;
+import net.minecraft.world.entity.LivingEntity;
 
 /**
  *

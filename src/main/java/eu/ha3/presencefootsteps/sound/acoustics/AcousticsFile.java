@@ -5,11 +5,9 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import eu.ha3.presencefootsteps.PresenceFootsteps;
 import eu.ha3.presencefootsteps.util.Range;
-import net.minecraft.util.Identifier;
-
 import java.io.Reader;
 import java.util.function.BiConsumer;
-
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -22,7 +20,7 @@ public record AcousticsFile (
         Range defaultPitch,
         String soundRoot
 ) {
-    public static final Identifier FILE_LOCATION = PresenceFootsteps.id("config/acoustics.json");
+    public static final ResourceLocation FILE_LOCATION = PresenceFootsteps.id("config/acoustics.json");
     private static final int ENGINE_VERSION = 2;
 
     @Deprecated

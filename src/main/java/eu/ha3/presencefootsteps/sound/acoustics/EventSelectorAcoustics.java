@@ -3,15 +3,13 @@ package eu.ha3.presencefootsteps.sound.acoustics;
 import eu.ha3.presencefootsteps.sound.Options;
 import eu.ha3.presencefootsteps.sound.State;
 import eu.ha3.presencefootsteps.sound.player.SoundPlayer;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.StringIdentifiable;
-
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.entity.LivingEntity;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -27,7 +25,7 @@ import com.mojang.serialization.MapLike;
  * @author Hurry
  */
 record EventSelectorAcoustics(Map<State, Acoustic> pairs) implements Acoustic {
-    private static final MapCodec<EventSelectorAcoustics> MAP_CODEC = Codec.simpleMap(State.CODEC, Acoustic.CODEC, StringIdentifiable.toKeyable(State.values()))
+    private static final MapCodec<EventSelectorAcoustics> MAP_CODEC = Codec.simpleMap(State.CODEC, Acoustic.CODEC, StringRepresentable.keys(State.values()))
             .xmap(EventSelectorAcoustics::new, EventSelectorAcoustics::pairs);
     public static final MapCodec<EventSelectorAcoustics> CODEC = MapCodec.of(MAP_CODEC, new MapDecoder<>() {
         @Override

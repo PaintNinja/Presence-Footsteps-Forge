@@ -3,6 +3,11 @@ package eu.ha3.presencefootsteps;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
+import net.minecraft.CrashReportCategory;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EntityType;
 import com.google.gson.GsonBuilder;
 import com.minelittlepony.common.util.settings.Config;
 import com.minelittlepony.common.util.settings.HeirarchicalJsonConfigAdapter;
@@ -11,11 +16,6 @@ import com.minelittlepony.common.util.settings.ToStringAdapter;
 import eu.ha3.presencefootsteps.config.EntitySelector;
 import eu.ha3.presencefootsteps.config.VolumeOption;
 import eu.ha3.presencefootsteps.sound.generator.Locomotion;
-import net.minecraft.entity.EntityType;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.crash.CrashReportSection;
-import net.minecraft.util.math.MathHelper;
 
 public class PFConfig extends Config {
 
@@ -80,11 +80,11 @@ public class PFConfig extends Config {
             .addComment("Options: ALL, PLAYERS_AND_HOSTILES, PLAYERS_ONLY")
             .addComment("Default: ALL");
 
-    public final Setting<Set<Identifier>> ignoredEntityTypes = this.<Identifier, Set<Identifier>>value("compatibility", "ignoredEntityTypes", () -> new HashSet<Identifier>(Set.of(
-                Identifier.ofVanilla("ghast"),
-                Identifier.ofVanilla("happy_ghast"),
-                Identifier.ofVanilla("phantom")
-            )), Identifier.class)
+    public final Setting<Set<ResourceLocation>> ignoredEntityTypes = this.<ResourceLocation, Set<ResourceLocation>>value("compatibility", "ignoredEntityTypes", () -> new HashSet<ResourceLocation>(Set.of(
+                ResourceLocation.withDefaultNamespace("ghast"),
+                ResourceLocation.withDefaultNamespace("happy_ghast"),
+                ResourceLocation.withDefaultNamespace("phantom")
+            )), ResourceLocation.class)
             .addComment("A list of entity type for any types of mobs that should never produce footsteps. Usually should be any flying 'bird' mobs.")
             .addComment("Default: minecraft:ghast, minecraft:happy_ghast, minecraft:phantom");
 
@@ -93,7 +93,7 @@ public class PFConfig extends Config {
 
     public PFConfig(Path file, PresenceFootsteps pf) {
         super(new HeirarchicalJsonConfigAdapter(new GsonBuilder()
-                .registerTypeAdapter(Identifier.class, new ToStringAdapter<>(Identifier::toString, Identifier::of))
+                .registerTypeAdapter(ResourceLocation.class, new ToStringAdapter<>(ResourceLocation::toString, ResourceLocation::parse))
         ), file);
         this.pf = pf;
     }
@@ -106,7 +106,7 @@ public class PFConfig extends Config {
     }
 
     public boolean isIgnoredForFootsteps(EntityType<?> type) {
-        return this.ignoredEntityTypes.get().contains(Registries.ENTITY_TYPE.getId(type));
+        return this.ignoredEntityTypes.get().contains(BuiltInRegistries.ENTITY_TYPE.getKey(type));
     }
 
     public EntitySelector cycleTargetSelector() {
@@ -191,11 +191,11 @@ public class PFConfig extends Config {
     }
 
     public int getGlobalVolume() {
-        return MathHelper.clamp(volume.get(), 0, 100);
+        return Mth.clamp(volume.get(), 0, 100);
     }
 
     public int getRunningVolumeIncrease() {
-        return MathHelper.clamp(runningVolumeIncrease.get(), -100, 100);
+        return Mth.clamp(runningVolumeIncrease.get(), -100, 100);
     }
 
     public float setGlobalVolume(float volume) {
@@ -221,13 +221,13 @@ public class PFConfig extends Config {
         return getRunningVolumeIncrease();
     }
 
-    public void populateCrashReport(CrashReportSection section) {
-        section.add("Disabled", getDisabled());
-        section.add("Global Volume", volume.get());
-        section.add("User's Selected Stance", getLocomotion());
-        section.add("Target Selector", getEntitySelector());
-        section.add("Enabled Global", global.get());
-        section.add("Enabled Multiplayer", multiplayer.get());
+    public void populateCrashReport(CrashReportCategory section) {
+        section.setDetail("Disabled", getDisabled());
+        section.setDetail("Global Volume", volume.get());
+        section.setDetail("User's Selected Stance", getLocomotion());
+        section.setDetail("Target Selector", getEntitySelector());
+        section.setDetail("Enabled Global", global.get());
+        section.setDetail("Enabled Multiplayer", multiplayer.get());
     }
 
     private static int volumeScaleToInt(float volume) {

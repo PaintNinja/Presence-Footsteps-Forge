@@ -3,8 +3,7 @@ package eu.ha3.presencefootsteps.config;
 import com.minelittlepony.common.client.gui.IField.IChangeCallback;
 import com.minelittlepony.common.util.settings.Config;
 import com.minelittlepony.common.util.settings.Setting;
-
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 public class VolumeOption implements IChangeCallback<Float> {
 
@@ -17,7 +16,7 @@ public class VolumeOption implements IChangeCallback<Float> {
     }
 
     public int get() {
-        return MathHelper.clamp(value.get(), 0, 100);
+        return Mth.clamp(value.get(), 0, 100);
     }
 
     public float getPercentage() {

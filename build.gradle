@@ -39,14 +39,13 @@ repositories {
     flatDir { dirs 'lib' }
     mavenLocal()
     maven { name 'pehkui'; url 'https://jitpack.io' }
-    maven { name 'modmenu'; url 'https://maven.terraformersmc.com/releases' }
     maven { name 'minelp'; url 'https://repo.minelittlepony-mod.com/maven/snapshot' }
     maven { name 'minelp-release'; url 'https://repo.minelittlepony-mod.com/maven/release' }
 }
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    mappings loom.officialMojangMappings()
     modApi "net.fabricmc:fabric-loader:${project.loader_version}"
 
     modApi fabricApi.module("fabric-api-base", project.fabric_version)
@@ -65,7 +64,6 @@ dependencies {
     } else {
       modCompileOnly "com.minelittlepony:minelittlepony-dummy:${project.minelp_version}"
     }
-    modCompileOnly("com.terraformersmc:modmenu:${project.modmenu_version}")
 
     // modImplementation "com.github.Virtuoel:Pehkui:${project.pehkui_version}"
 }
