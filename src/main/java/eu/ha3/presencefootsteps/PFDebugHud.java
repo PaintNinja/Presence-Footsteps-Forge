@@ -1,8 +1,8 @@
-/*
 package eu.ha3.presencefootsteps;
 
 import java.util.*;
 
+import net.minecraftforge.fml.ModList;
 import org.jetbrains.annotations.Nullable;
 
 import eu.ha3.presencefootsteps.api.DerivedBlock;
@@ -10,7 +10,6 @@ import eu.ha3.presencefootsteps.sound.SoundEngine;
 import eu.ha3.presencefootsteps.sound.generator.Locomotion;
 import eu.ha3.presencefootsteps.world.PrimitiveLookup;
 import eu.ha3.presencefootsteps.world.SoundsKey;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.debug.DebugScreenDisplayer;
@@ -50,7 +49,7 @@ public class PFDebugHud implements DebugScreenEntry {
 
         finalList.addToGroup(DebugScreenEntries.SOUND_MOOD, List.of(
                 "",
-                ChatFormatting.UNDERLINE + "Presence Footsteps " + FabricLoader.getInstance().getModContainer("presencefootsteps").get().getMetadata().getVersion(),
+                ChatFormatting.UNDERLINE + "Presence Footsteps " + ModList.get().getModContainerById("presencefootsteps").get().getModInfo().getVersion(),
                 String.format("Enabled: %s, Multiplayer: %s, Running: %s", config.getEnabled(), config.getEnabledMP(), engine.isRunning(client)),
                 String.format("Volume: Global[G: %s%%, W: %s%%, F: %s%%]",
                         config.getGlobalVolume(),
@@ -146,4 +145,3 @@ public class PFDebugHud implements DebugScreenEntry {
         return list;
     }
 }
-*/

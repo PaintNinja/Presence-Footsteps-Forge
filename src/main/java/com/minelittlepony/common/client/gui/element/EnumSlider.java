@@ -1,0 +1,53 @@
+package com.minelittlepony.common.client.gui.element;
+
+import net.minecraft.network.chat.Component;
+
+import java.util.Objects;
+import java.util.function.Supplier;
+
+/**
+ * Also a slider, but conveniently works with Enum values.
+ *
+ * @author Sollace
+ */
+public class EnumSlider<T extends Enum<T>> extends AbstractSlider<T> {
+
+    private final T[] values;
+
+    public EnumSlider(int x, int y, Supplier<T> value) {
+        this(x, y, Objects.requireNonNull(value.get(), "value was null"));
+    }
+
+    @SuppressWarnings("unchecked")
+    public EnumSlider(int x, int y, T value) {
+        super(x, y, 0, value.getClass().getEnumConstants().length - 1, value);
+        values = (T[])value.getClass().getEnumConstants();
+
+        setTextFormat(s -> Component.nullToEmpty(getValue().name()));
+    }
+
+    @Override
+    protected float valueToFloat(T value) {
+        return value.ordinal();
+    }
+
+    @Override
+    protected T floatToValue(float value) {
+        value = Math.round(value);
+
+        while (value < 0) {
+            value += values.length;
+        }
+
+        return values[(int)value % values.length];
+    }
+
+    @Override
+    protected T nextValue(T value, int steps) {
+        int ordinal = value.ordinal() + steps;
+        while (ordinal < 0) {
+            ordinal += values.length;
+        }
+        return values[ordinal % values.length];
+    }
+}

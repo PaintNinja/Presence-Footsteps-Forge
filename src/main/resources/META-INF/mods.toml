@@ -6,7 +6,7 @@ clientSideOnly = true
 
 [[mods]]
 modId = "presencefootsteps"
-version = "1.21.11-1.12.3-beta.1"
+version = "1.21.11-1.12.3"
 displayName = "Presence Footsteps (Forge)"
 displayURL = "https://www.curseforge.com/minecraft/mc-mods/presence-footsteps-forge"
 updateJSONURL = "https://forge.curseupdate.com/433068/presencefootsteps"

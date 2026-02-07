@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.minelittlepony.common.client.gui.GameGui;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.util.Lazy;
@@ -47,7 +48,7 @@ public class PresenceFootsteps {
     private final Path pfFolder = FMLPaths.GAMEDIR.get().resolve("presencefootsteps");
     private final PFConfig config = new PFConfig(pfFolder.resolve("userconfig.json"), this);
     private final SoundEngine engine = new SoundEngine(config);
-//    private final PFDebugHud debugHud = new PFDebugHud(engine);
+    private final PFDebugHud debugHud = new PFDebugHud(engine);
     private @Nullable Lazy<KeyMapping> optionsKeyBinding = null;
     private @Nullable Lazy<KeyMapping> toggleKeyBinding = null;
     private @Nullable Lazy<KeyMapping> debugToggleKeyBinding = null;
@@ -56,11 +57,11 @@ public class PresenceFootsteps {
             config.toggleDisabled();
         }
     });
-//    private final Edge debugToggle = new Edge(z -> {
-//        if (z) {
-//            Minecraft.getInstance().debugEntries.toggleStatus(PFDebugHud.ID);
-//        }
-//    });
+    private final Edge debugToggle = new Edge(z -> {
+        if (z) {
+            Minecraft.getInstance().debugEntries.toggleStatus(PFDebugHud.ID);
+        }
+    });
 
     private final AtomicBoolean configChanged = new AtomicBoolean();
 
@@ -69,9 +70,9 @@ public class PresenceFootsteps {
         onInitializeClient();
     }
 
-//    public PFDebugHud getDebugHud() {
-//        return debugHud;
-//    }
+    public PFDebugHud getDebugHud() {
+        return debugHud;
+    }
 
     public SoundEngine getEngine() {
         return engine;
@@ -93,6 +94,10 @@ public class PresenceFootsteps {
             this.optionsKeyBinding = Lazy.of(() -> new KeyMapping("key.presencefootsteps.settings", InputConstants.Type.KEYSYM, InputConstants.KEY_F10, KEY_BINDING_CATEGORY));
             this.toggleKeyBinding = Lazy.of(() -> new KeyMapping("key.presencefootsteps.toggle", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, KEY_BINDING_CATEGORY));
             this.debugToggleKeyBinding = Lazy.of(() -> new KeyMapping("key.presencefootsteps.debug_toggle", InputConstants.Type.KEYSYM, InputConstants.KEY_Z, KEY_BINDING_CATEGORY));
+
+            event.register(optionsKeyBinding.get());
+            event.register(toggleKeyBinding.get());
+            event.register(debugToggleKeyBinding.get());
         });
 
         TickEvent.ClientTickEvent.Post.BUS.addListener(event -> onTick(Minecraft.getInstance()));
@@ -101,17 +106,17 @@ public class PresenceFootsteps {
     }
 
     private void onTick(Minecraft client) {
-//        if (client.screen instanceof PFOptionsScreen screen && configChanged.getAndSet(false)) {
-//            screen.init(screen.width, screen.height);
-//        }
+        if (client.screen instanceof PFOptionsScreen screen && configChanged.getAndSet(false)) {
+            screen.init(screen.width, screen.height);
+        }
 
-//        debugToggle.accept(GameGui.isKeyDown(InputConstants.KEY_F3) && debugToggleKeyBinding.isDown());
+        debugToggle.accept(GameGui.isKeyDown(InputConstants.KEY_F3) && debugToggleKeyBinding.get().isDown());
 
         Optional.ofNullable(client.player).filter(e -> !e.isRemoved()).ifPresent(cameraEntity -> {
             if (client.screen == null) {
-//                if (optionsKeyBinding.isDown()) {
-//                    client.setScreen(new PFOptionsScreen(client.screen));
-//                }
+                if (optionsKeyBinding.get().isDown()) {
+                    client.setScreen(new PFOptionsScreen(client.screen));
+                }
                 toggler.accept(toggleKeyBinding.get().isDown());
             }
 

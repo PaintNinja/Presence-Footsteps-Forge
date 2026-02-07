@@ -7,7 +7,7 @@ plugins {
 group = project.group
 description = project.displayName
 base.archivesName = project.name
-version = '1.21.11-1.12.3-beta.1'
+version = '1.21.11-1.12.3'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
@@ -18,7 +18,7 @@ minecraft {
     reobf = false
     copyIdeResources = true
 
-    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     runs {
         client {
