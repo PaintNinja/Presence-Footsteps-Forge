@@ -3,15 +3,14 @@ package eu.ha3.presencefootsteps.world;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.SoundType;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import eu.ha3.presencefootsteps.util.JsonObjectWriter;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.util.Identifier;
 
 public class BiomeVarianceLookup implements Index<Identifier, BiomeVarianceLookup.BiomeVariance> {
     private final Map<Identifier, BiomeVariance> entries = new HashMap<>();
@@ -30,13 +29,13 @@ public class BiomeVarianceLookup implements Index<Identifier, BiomeVarianceLooku
     public Loader createLoader() {
         return (key, value) -> {
             BiomeVariance.CODEC.decode(JsonOps.INSTANCE, value).result().map(Pair::getFirst).ifPresent(i -> {
-                entries.put(Identifier.of(key), i);
+                entries.put(Identifier.parse(key), i);
             });
         };
     }
 
     @Override
-    public void writeToReport(boolean full, JsonObjectWriter writer, Map<String, BlockSoundGroup> groups) throws IOException {
+    public void writeToReport(boolean full, JsonObjectWriter writer, Map<String, SoundType> groups) throws IOException {
     }
 
     public record BiomeVariance(float volume, float pitch) {

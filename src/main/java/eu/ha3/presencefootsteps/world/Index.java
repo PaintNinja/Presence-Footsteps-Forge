@@ -2,13 +2,12 @@ package eu.ha3.presencefootsteps.world;
 
 import java.io.Reader;
 import java.util.function.Consumer;
-
+import net.minecraft.resources.Identifier;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import eu.ha3.presencefootsteps.util.BlockReport.Reportable;
-import net.minecraft.util.Identifier;
 
 public interface Index<K, V> extends Reportable {
     /**

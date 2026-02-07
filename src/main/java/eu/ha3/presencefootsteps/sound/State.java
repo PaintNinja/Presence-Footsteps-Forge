@@ -1,10 +1,9 @@
 package eu.ha3.presencefootsteps.sound;
 
+import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.util.StringIdentifiable;
-
-public enum State implements StringIdentifiable {
+public enum State implements StringRepresentable {
     /**
      * Stationary. (no movement)
      */
@@ -58,7 +57,7 @@ public enum State implements StringIdentifiable {
      */
     UP_RUN(RUN);
 
-    public static final EnumCodec<State> CODEC = StringIdentifiable.createCodec(State::values);
+    public static final EnumCodec<State> CODEC = StringRepresentable.fromEnum(State::values);
 
     private final State destination;
 
@@ -70,7 +69,7 @@ public enum State implements StringIdentifiable {
     }
 
     @Override
-    public String asString() {
+    public String getSerializedName() {
         return jsonName;
     }
 

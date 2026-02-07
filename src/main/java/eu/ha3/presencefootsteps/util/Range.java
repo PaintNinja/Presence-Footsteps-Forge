@@ -1,14 +1,12 @@
 package eu.ha3.presencefootsteps.util;
 
 import java.util.Random;
-
+import net.minecraft.util.Mth;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
-import net.minecraft.util.math.MathHelper;
 
 public record Range (float min, float max) {
     private static final Codec<Float> PERCENTAGE_CODEC = Codec.FLOAT.xmap(i -> i / 100F, i -> i * 100F);
@@ -19,7 +17,7 @@ public record Range (float min, float max) {
     private static final Codec<Range> POINT_CODEC = PERCENTAGE_CODEC.xmap(Range::exactly, Range::min);
     public static final Codec<Range> CODEC = Codec.xor(POINT_CODEC, RANGE_CODEC).xmap(
             Either::unwrap,
-            i -> MathHelper.approximatelyEquals(i.min(), i.max()) ? Either.left(i) : Either.right(i)
+            i -> Mth.equal(i.min(), i.max()) ? Either.left(i) : Either.right(i)
     );
 
     public static final Range DEFAULT = exactly(1);
@@ -55,7 +53,7 @@ public record Range (float min, float max) {
     }
 
     public float on(float value) {
-        return MathHelper.lerp(value, min, max);
+        return Mth.lerp(value, min, max);
     }
 
     private static float getPercentage(JsonObject object, String param, float fallback) {

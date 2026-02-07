@@ -1,9 +1,8 @@
 package eu.ha3.presencefootsteps.api;
 
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 
 public interface DerivedBlock {
     static BlockState getBaseOf(BlockState state) {
