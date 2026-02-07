@@ -3,8 +3,6 @@ package eu.ha3.presencefootsteps.world;
 import eu.ha3.presencefootsteps.PresenceFootsteps;
 import eu.ha3.presencefootsteps.util.JsonObjectWriter;
 import it.unimi.dsi.fastutil.objects.*;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.MappingResolver;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -134,11 +132,6 @@ public record StateLookup(Map<String, Bucket> substrates) implements Lookup.Data
         if (canonicalName == null) {
             return "<anonymous>";
         }
-
-        try {
-            MappingResolver resolver = FabricLoader.getInstance().getMappingResolver();
-            return resolver.unmapClassName(resolver.getNamespaces().contains("named") ? "named" : "intermediary", canonicalName);
-        } catch (Throwable ignore) {}
 
         return canonicalName;
     }

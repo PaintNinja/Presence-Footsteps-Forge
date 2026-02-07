@@ -1,3 +1,4 @@
+/*
 package eu.ha3.presencefootsteps;
 
 import java.io.IOException;
@@ -236,3 +237,4 @@ class PFOptionsScreen extends GameGui {
         return slider -> Component.translatable(key, (int)Math.floor(slider.getValue()));
     }
 }
+*/

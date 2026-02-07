@@ -1,11 +1,11 @@
 package eu.ha3.presencefootsteps.config;
 
-import com.minelittlepony.common.client.gui.IField.IChangeCallback;
+//import com.minelittlepony.common.client.gui.IField.IChangeCallback;
 import com.minelittlepony.common.util.settings.Config;
 import com.minelittlepony.common.util.settings.Setting;
 import net.minecraft.util.Mth;
 
-public class VolumeOption implements IChangeCallback<Float> {
+public class VolumeOption {//implements IChangeCallback<Float> {
 
     private final Config config;
     private final Setting<Integer> value;
@@ -29,7 +29,7 @@ public class VolumeOption implements IChangeCallback<Float> {
         return get();
     }
 
-    @Override
+//    @Override
     public Float perform(Float value) {
         return set(value);
     }
