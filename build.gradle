@@ -1,42 +1,67 @@
 plugins {
-    id 'java-library'
-    id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
-    id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
+    id 'eclipse'
+    id 'idea'
+    id 'net.minecraftforge.gradle' version '[6.0.46,6.2)'
 }
 
 group = project.group
-description = project.displayname
+description = project.displayName
 base.archivesName = project.name
-version = '1.21.1-1.12.0-beta.1'
+version = '1.21.1-1.11.1'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
+println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
     mappings channel: 'official', version: '1.21.1'
-    copyIdeResources = true
+
     reobf = false
+    copyIdeResources = true
 
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     runs {
         client {
+            workingDirectory project.file('run')
+
             property 'forge.logging.console.level', 'debug'
+
             arg '-mixin.config=presencefootsteps.mixin.json'
+
+            mods {
+                "${mod_id}" {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'Forge'
+        url = 'https://maven.minecraftforge.net'
+    }
+    maven {
+        name = 'Minecraft libraries'
+        url = 'https://libraries.minecraft.net'
+    }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'Sponge'
+                url = 'https://repo.spongepowered.org/repository/maven-public'
+            }
+        }
+        filter {
+            includeGroupAndSubgroups('org.spongepowered')
         }
     }
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.21.1-52.0.47'
-    annotationProcessor 'org.spongepowered:mixin:0.8.7:processor'
-}
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = "UTF-8"
-}
-
-mixin {
-    config 'presencefootsteps.mixin.json'
+    minecraft "net.minecraftforge:forge:1.21.1-52.1.10"
 }
 
 tasks.named('jar', Jar) {
@@ -44,6 +69,12 @@ tasks.named('jar', Jar) {
         attributes(['MixinConfigs': 'presencefootsteps.mixin.json'])
     }
 }
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "UTF-8"
+}
+
+idea.module { downloadJavadoc = downloadSources = true }
 
 sourceSets.each {
     def dir = layout.buildDirectory.dir("sourcesSets/$it.name")

@@ -16,15 +16,16 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.BlockState;
 
+
 @Mixin(Block.class)
 abstract class MAbstractBlock extends BlockBehaviour implements DerivedBlock {
     MAbstractBlock() { super(null); }
 
     @Override
     public BlockState getBaseBlockState() {
-        Block baseBlock = ((DerivedBlock.Settings)properties).getBaseBlock();
+        Block baseBlock = ((Settings)properties).getBaseBlock();
         if (baseBlock == null) {
-            baseBlock = PresenceFootsteps.getInstance().engine.getIsolator().heuristics().getMostSimilar((Block)(Object)this);
+            baseBlock = PresenceFootsteps.getInstance().getEngine().getIsolator().heuristics().getMostSimilar((Block)(Object)this);
         }
         return (baseBlock == null ? Blocks.AIR : baseBlock).defaultBlockState();
     }

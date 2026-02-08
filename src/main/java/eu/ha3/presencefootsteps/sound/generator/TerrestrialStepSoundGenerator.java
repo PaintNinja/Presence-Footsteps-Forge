@@ -1,28 +1,29 @@
 package eu.ha3.presencefootsteps.sound.generator;
 
-import net.minecraft.world.entity.EntityAttachment;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import com.google.common.base.MoreObjects;
 
 import eu.ha3.presencefootsteps.config.Variator;
 import eu.ha3.presencefootsteps.mixins.ILivingEntity;
 import eu.ha3.presencefootsteps.sound.State;
+import eu.ha3.presencefootsteps.util.Lerp;
 import eu.ha3.presencefootsteps.util.PlayerUtil;
 import eu.ha3.presencefootsteps.sound.Options;
 import eu.ha3.presencefootsteps.sound.SoundEngine;
 import eu.ha3.presencefootsteps.world.Association;
 import eu.ha3.presencefootsteps.world.AssociationPool;
+import eu.ha3.presencefootsteps.world.BiomeVarianceLookup;
 import eu.ha3.presencefootsteps.world.Solver;
 import eu.ha3.presencefootsteps.world.SoundsKey;
 import eu.ha3.presencefootsteps.world.Substrates;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.item.ArmorItem;
-
-import java.util.List;
 
 class TerrestrialStepSoundGenerator implements StepSoundGenerator {
     // Footsteps
@@ -33,7 +34,8 @@ class TerrestrialStepSoundGenerator implements StepSoundGenerator {
     // Airborne
     protected boolean isAirborne;
 
-    protected float lastFallDistance;
+    protected double lastFallDistance;
+    protected float distanceReference;
     protected float lastReference;
     protected boolean isImmobile;
     protected long timeImmobile;
@@ -58,11 +60,24 @@ class TerrestrialStepSoundGenerator implements StepSoundGenerator {
     protected final MotionTracker motionTracker = new MotionTracker(this);
     protected final AssociationPool associations;
 
+    private final Lerp biomePitch = new Lerp();
+    private final Lerp biomeVolume = new Lerp();
+
     public TerrestrialStepSoundGenerator(LivingEntity entity, SoundEngine engine, Modifier<TerrestrialStepSoundGenerator> modifier) {
         this.entity = entity;
         this.engine = engine;
         this.modifier = modifier;
         this.associations = new AssociationPool(entity, engine);
+    }
+
+    @Override
+    public float getLocalPitch(float tickDelta) {
+        return biomePitch.get(tickDelta);
+    }
+
+    @Override
+    public float getLocalVolume(float tickDelta) {
+        return biomeVolume.get(tickDelta);
     }
 
     @Override
@@ -72,19 +87,26 @@ class TerrestrialStepSoundGenerator implements StepSoundGenerator {
 
     @Override
     public void generateFootsteps() {
+        BiomeVarianceLookup.BiomeVariance variance = entity.level().getBiome(entity.blockPosition()).unwrapKey().map(ResourceKey::location).map(key -> {
+            return engine.getIsolator().biomes().lookup(key);
+        }).orElse(BiomeVarianceLookup.BiomeVariance.DEFAULT);
+
+        biomePitch.update(variance.pitch(), 0.01F);
+        biomeVolume.update(variance.volume(), 0.01F);
+
         motionTracker.simulateMotionData(entity);
         simulateFootsteps();
         simulateAirborne();
         simulateBrushes();
         simulateStationary();
-        lastFallDistance = entity.fallDistance;
+        lastFallDistance = motionTracker.getFallDistance();
     }
 
     protected void simulateStationary() {
         if (isImmobile && (entity.onGround() || !entity.isUnderWater()) && playbackImmobile()) {
             Association assos = associations.findAssociation(0d, isRightFoot);
 
-            if (!assos.isSilent() || !isImmobile) {
+            if (assos.isResult() && (!assos.isSilent() || !isImmobile)) {
                 playStep(assos, State.STAND);
             }
         }
@@ -117,11 +139,7 @@ class TerrestrialStepSoundGenerator implements StepSoundGenerator {
     }
 
     protected void simulateFootsteps() {
-        if (!(entity instanceof Player)) {
-            entity.moveDist += (float)Math.sqrt(motionTracker.getHorizontalSpeed()) * 0.6f;
-        }
-
-        final float distanceReference = entity.moveDist;
+        final float distanceReference = motionTracker.getDistanceTraveled();
 
         stepThisFrame = false;
 
@@ -181,7 +199,7 @@ class TerrestrialStepSoundGenerator implements StepSoundGenerator {
             }
 
             // Fix high speed footsteps (i.e. horse riding)
-            if (motionTracker.getHorizontalSpeed() > 0.1) {
+            if ((entity instanceof AbstractHorse) && motionTracker.getHorizontalSpeed() > 0.1) {
                 distance *= 3;
             }
 
@@ -216,11 +234,13 @@ class TerrestrialStepSoundGenerator implements StepSoundGenerator {
 
         if (hasStoppingConditions()) {
             float volume = Math.min(1, (float) entity.getDeltaMovement().length() * 0.35F);
-            Options options = Options.singular("gliding_volume", volume);
-            State state = entity.isUnderWater() ? State.SWIM : event;
 
-            engine.getIsolator().acoustics().playAcoustic(entity, SoundsKey.SWIM, state, options);
-
+            engine.getIsolator().acoustics().playAcoustic(entity,
+                    entity.isInWater() ? SoundsKey.SWIM_WATER : SoundsKey.SWIM_LAVA,
+                    (entity.isUnderWater() || entity.isEyeInFluid(FluidTags.LAVA)) ? State.SWIM : event,
+                    Options.singular("gliding_volume", volume)
+                    .and(Options.singular("volume_scale", PlayerUtil.isClientPlayer(entity) ? 1 : 0.125F))
+            );
             playStep(associations.findAssociation(entity.blockPosition().below(), Solver.MESSY_FOLIAGE_STRATEGY), event);
         } else {
             if (!entity.isDiscrete() || event.isExtraLoud()) {
@@ -233,7 +253,7 @@ class TerrestrialStepSoundGenerator implements StepSoundGenerator {
     }
 
     protected boolean hasStoppingConditions() {
-        return entity.isInWater();
+        return entity.isInWater() || entity.isInLava();
     }
 
     protected void simulateAirborne() {
@@ -311,11 +331,9 @@ class TerrestrialStepSoundGenerator implements StepSoundGenerator {
             return;
         }
 
-        var attachments = entity.getType().getDimensions().attachments();
-        List<Vec3> vehicleAttachements = attachments.attachments.get(EntityAttachment.VEHICLE);
         Association assos = associations.findAssociation(BlockPos.containing(
             entity.getX(),
-            entity.getY() - 0.1D - (entity.isPassenger() && vehicleAttachements != null && !vehicleAttachements.isEmpty() ? entity.getAgeScale() * -vehicleAttachements.getFirst().y : 0) - (entity.onGround() ? 0 : 0.25D),
+            MoreObjects.firstNonNull(entity.getRootVehicle(), entity).getY() - 0.1D - (entity.onGround() ? 0 : 0.25D),
             entity.getZ()
         ), Solver.MESSY_FOLIAGE_STRATEGY);
 

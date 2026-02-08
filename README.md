@@ -1,6 +1,8 @@
-# Presence Footsteps [Forge]
+# Presence-Footsteps
+[![Build Status](https://github.com/Sollace/Presence-Footsteps/actions/workflows/gradle-build.yml/badge.svg)](https://github.com/MineLittlePony/Kirin/actions/workflows/gradle-build.yml)
+[![Version](https://img.shields.io/github/v/release/Sollace/Presence-Footsteps)](https://github.com/Sollace/Presence-Footsteps/releases/latest)
 ![License](https://img.shields.io/github/license/Sollace/Presence-Footsteps)
-![](https://img.shields.io/badge/api-forge-orange.svg)
+![](https://img.shields.io/badge/api-fabric-orange.svg)
 
 _..An Overly complicated Sound Mod..._
 

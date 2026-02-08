@@ -8,9 +8,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-//import com.minelittlepony.common.client.gui.IField.IChangeCallback;
+import com.minelittlepony.common.client.gui.IField.IChangeCallback;
 
-public class VolumeOption {//implements IChangeCallback<Float> {
+public class VolumeOption implements IChangeCallback<Float> {
 
     private transient final JsonFile config;
 
@@ -35,10 +35,10 @@ public class VolumeOption {//implements IChangeCallback<Float> {
         return get();
     }
 
-//    @Override
-//    public Float perform(Float value) {
-//        return set(value);
-//    }
+    @Override
+    public Float perform(Float value) {
+        return set(value);
+    }
 
     @Override
     public String toString() {

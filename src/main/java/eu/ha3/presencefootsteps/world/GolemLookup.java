@@ -2,16 +2,23 @@ package eu.ha3.presencefootsteps.world;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.SoundType;
+import com.google.gson.JsonObject;
+
 import eu.ha3.presencefootsteps.util.JsonObjectWriter;
 
 public class GolemLookup extends AbstractSubstrateLookup<EntityType<?>> {
+    public GolemLookup(JsonObject json) {
+        super(json);
+    }
+
     @Override
-    public SoundsKey getAssociation(EntityType<?> key, String substrate) {
-        return getSubstrateMap(getId(key), substrate).getOrDefault(EntityType.getKey(key), SoundsKey.UNASSIGNED);
+    public Optional<SoundsKey> getAssociation(EntityType<?> key, String substrate) {
+        return getSubstrateMap(getId(key), substrate).getOrDefault(EntityType.getKey(key), Optional.empty());
     }
 
     @Override
@@ -19,15 +26,14 @@ public class GolemLookup extends AbstractSubstrateLookup<EntityType<?>> {
         return EntityType.getKey(key);
     }
 
-    @Override
-    public void writeToReport(boolean full, JsonObjectWriter writer, Map<String, SoundType> groups) throws IOException {
+    public static void writeToReport(Lookup<EntityType<?>> lookup, boolean full, JsonObjectWriter writer, Map<String, SoundType> groups) throws IOException {
         writer.each(BuiltInRegistries.ENTITY_TYPE, type -> {
-            if (full || !contains(type)) {
+            if (full || !lookup.contains(type)) {
                 writer.object(EntityType.getKey(type).toString(), () -> {
                     writer.object("associations", () -> {
-                        getSubstrates().forEach(substrate -> {
+                        lookup.getSubstrates().forEach(substrate -> {
                             try {
-                                SoundsKey association = getAssociation(type, substrate);
+                                SoundsKey association = lookup.getAssociation(type, substrate);
                                 if (association.isResult()) {
                                     writer.field(substrate, association.raw());
                                 }

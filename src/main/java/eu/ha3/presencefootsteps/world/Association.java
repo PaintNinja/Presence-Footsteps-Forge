@@ -11,18 +11,19 @@ public record Association (
         BlockState state,
         BlockPos pos,
         @Nullable LivingEntity source,
+        boolean forcePlay,
 
         SoundsKey dry,
         SoundsKey wet,
         SoundsKey foliage
 ) {
-    public static final Association NOT_EMITTER = new Association(Blocks.AIR.defaultBlockState(), BlockPos.ZERO, null, SoundsKey.NON_EMITTER, SoundsKey.NON_EMITTER, SoundsKey.NON_EMITTER);
+    public static final Association NOT_EMITTER = new Association(Blocks.AIR.defaultBlockState(), BlockPos.ZERO, null, false, SoundsKey.NON_EMITTER, SoundsKey.NON_EMITTER, SoundsKey.NON_EMITTER);
 
-    public static Association of(BlockState state, BlockPos pos, LivingEntity source, SoundsKey dry, SoundsKey wet, SoundsKey foliage) {
+    public static Association of(BlockState state, BlockPos pos, LivingEntity source, boolean forcePlay, SoundsKey dry, SoundsKey wet, SoundsKey foliage) {
         if (dry.isSilent() && wet.isSilent() && foliage.isSilent()) {
             return NOT_EMITTER;
         }
-        return new Association(state, pos.immutable(), source, dry, wet, foliage);
+        return new Association(state, pos.immutable(), source, forcePlay, dry, wet, foliage);
     }
 
     public boolean isResult() {
@@ -30,7 +31,7 @@ public record Association (
     }
 
     public boolean isSilent() {
-        return this == NOT_EMITTER;
+        return this == NOT_EMITTER || (state.isAir() && !forcePlay);
     }
 
     public boolean dataEquals(Association other) {

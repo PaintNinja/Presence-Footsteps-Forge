@@ -69,20 +69,25 @@ public final class AssociationPool {
             return !e.canBeCollidedWith() || e.getBoundingBox().maxY < entity.getY() + 0.2F;
         })) {
             if ((association = engine.getIsolator().golems().getAssociation(golem.getType(), substrate)).isEmitter()) {
+                wasGolem = true;
                 return association;
             }
         }
 
         BlockState baseState = DerivedBlock.getBaseOf(state);
-        if (!state.isAir() && (
-            getForState(state, substrate)
+
+        if (state.isAir()) {
+            return SoundsKey.UNASSIGNED;
+        }
+
+        if (getForState(state, substrate)
             || (!baseState.isAir() && (
                     getForState(baseState, substrate)
                 || (!Substrates.isDefault(substrate) && getForState(baseState, Substrates.DEFAULT))
                 || (getForPrimitive(baseState, substrate))
             ))
             || getForPrimitive(state, substrate)
-        )) {
+        ) {
             return association;
         }
 
@@ -90,7 +95,7 @@ public final class AssociationPool {
     }
 
     private boolean getForState(BlockState state, String substrate) {
-        return (association = engine.getIsolator().blocks().getAssociation(state, substrate)).isResult();
+        return (association = engine.getIsolator().blocks(entity.getType()).getAssociation(state, substrate)).isResult();
     }
 
     private boolean getForPrimitive(BlockState state, String substrate) {

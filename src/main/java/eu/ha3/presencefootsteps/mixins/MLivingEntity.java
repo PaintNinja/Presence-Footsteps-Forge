@@ -12,7 +12,7 @@ import eu.ha3.presencefootsteps.sound.generator.StepSoundGenerator;
 @Mixin(LivingEntity.class)
 abstract class MLivingEntity extends Entity implements StepSoundSource {
     MLivingEntity() {super(null, null);}
-    private final StepSoundSource stepSoundSource = new StepSoundSource.Container((LivingEntity)(Object)this);
+    private final StepSoundSource stepSoundSource = new Container((LivingEntity)(Object)this);
     @Override
     public Optional<StepSoundGenerator> getStepGenerator(SoundEngine engine) {
         return stepSoundSource.getStepGenerator(engine);

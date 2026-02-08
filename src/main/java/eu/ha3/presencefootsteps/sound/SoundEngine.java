@@ -10,11 +10,11 @@ import java.util.concurrent.Executor;
 import java.util.stream.Stream;
 
 import net.minecraft.server.packs.resources.PreparableReloadListener;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.mojang.datafixers.util.Either;
 import eu.ha3.presencefootsteps.PFConfig;
-import eu.ha3.presencefootsteps.config.EntitySelector;
+import eu.ha3.presencefootsteps.PresenceFootsteps;
 import eu.ha3.presencefootsteps.sound.player.ImmediateSoundPlayer;
 import eu.ha3.presencefootsteps.util.PlayerUtil;
 import eu.ha3.presencefootsteps.world.Solver;
@@ -23,7 +23,11 @@ import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.network.protocol.game.ClientboundSoundPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -41,7 +45,13 @@ import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.entity.vehicle.Boat;
 
 public class SoundEngine implements PreparableReloadListener {
-    //private static final ResourceLocation ID = new ResourceLocation("presencefootsteps", "sounds");
+    private static final ResourceLocation ID = PresenceFootsteps.id("sounds");
+    private static final Set<ResourceLocation> BLOCKED_PLAYER_SOUNDS = Set.of(
+            SoundEvents.PLAYER_SWIM.getLocation(),
+            SoundEvents.PLAYER_SPLASH.getLocation(),
+            SoundEvents.PLAYER_BIG_FALL.getLocation(),
+            SoundEvents.PLAYER_SMALL_FALL.getLocation()
+    );
 
     private Isolator isolator = new Isolator(this);
     private final Solver solver = new PFSolver(this);
@@ -106,8 +116,11 @@ public class SoundEngine implements PreparableReloadListener {
     }
 
     public boolean isRunning(Minecraft client) {
+        return !client.isPaused() && isActive(client);
+    }
+
+    public boolean isActive(Minecraft client) {
         return hasData()
-                && !client.isPaused()
                 && config.getEnabled()
                 && (client.isLocalServer() || config.getEnabledMP());
     }
@@ -168,42 +181,25 @@ public class SoundEngine implements PreparableReloadListener {
         }
     }
 
-    public boolean onSoundRecieved(@Nullable Holder<SoundEvent> event, SoundSource category) {
-        if (event == null || !isRunning(Minecraft.getInstance())) {
+    public boolean onSoundRecieved(ClientboundSoundPacket packet) {
+        @Nullable Holder<SoundEvent> event = packet.getSound();
+        @Nullable ClientLevel world = Minecraft.getInstance().level;
+
+        if (world == null || event == null || !isActive(Minecraft.getInstance())) {
             return false;
         }
 
-        if (config.getEntitySelector() == EntitySelector.PLAYERS_ONLY && category != SoundSource.PLAYERS) {
-            return false;
-        }
+        var stepAtPos = world.getBlockState(BlockPos.containing(packet.getX(), packet.getY() - 1, packet.getZ())).getSoundType().getStepSound();
+        var sound = Either.unwrap(event.unwrap().mapBoth(i -> i.location(), i -> i.getLocation()));
 
-        if (config.getEntitySelector() == EntitySelector.PLAYERS_AND_HOSTILES && category != SoundSource.PLAYERS && category != SoundSource.HOSTILE) {
-            return false;
-        }
-
-        if (config.getEntitySelector() == EntitySelector.ALL && category != SoundSource.PLAYERS && category != SoundSource.HOSTILE && category != SoundSource.NEUTRAL) {
-            return false;
-        }
-
-        return event.unwrap().right().filter(sound -> {
-            if (event == SoundEvents.PLAYER_SWIM
-                || event == SoundEvents.PLAYER_SPLASH
-                || event == SoundEvents.PLAYER_BIG_FALL
-                || event == SoundEvents.PLAYER_SMALL_FALL) {
-                return true;
-            }
-
-            String[] name = sound.getLocation().getPath().split("\\.");
-            return name.length > 0
-                    && "block".contentEquals(name[0])
-                    && "step".contentEquals(name[name.length - 1]);
-        }).isPresent();
+        return BLOCKED_PLAYER_SOUNDS.contains(sound)
+                || (packet.getSource() == SoundSource.PLAYERS && sound.equals(stepAtPos.getLocation()));
     }
 
     @Override
-    public @NotNull CompletableFuture<Void> reload(PreparationBarrier sync, ResourceManager sender,
-                                                   ProfilerFiller serverProfiler, ProfilerFiller clientProfiler,
-                                                   Executor serverExecutor, Executor clientExecutor) {
+    public CompletableFuture<Void> reload(PreparationBarrier sync, ResourceManager sender,
+                                          ProfilerFiller serverProfiler, ProfilerFiller clientProfiler,
+                                          Executor serverExecutor, Executor clientExecutor) {
         return sync.wait(null).thenRunAsync(() -> {
             clientProfiler.startTick();
             clientProfiler.push("Reloading PF Sounds");

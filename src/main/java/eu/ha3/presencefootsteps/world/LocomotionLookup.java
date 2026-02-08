@@ -15,6 +15,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.SoundType;
+import com.google.gson.JsonElement;
 
 public class LocomotionLookup implements Index<Entity, Locomotion> {
     private final Map<ResourceLocation, Locomotion> values = new Object2ObjectLinkedOpenHashMap<>();
@@ -34,14 +35,14 @@ public class LocomotionLookup implements Index<Entity, Locomotion> {
     }
 
     @Override
-    public void add(String key, String value) {
+    public void add(String key, JsonElement value) {
         ResourceLocation id = ResourceLocation.parse(key);
 
         if (!BuiltInRegistries.ENTITY_TYPE.containsKey(id)) {
             PresenceFootsteps.logger.warn("Locomotion registered for unknown entity type " + id);
         }
 
-        values.put(id, Locomotion.byName(value.toUpperCase()));
+        values.put(id, Locomotion.byName(value.getAsString().toUpperCase()));
     }
 
     @Override
