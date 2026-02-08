@@ -7,12 +7,11 @@ import eu.ha3.presencefootsteps.sound.player.SoundPlayer;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import eu.ha3.presencefootsteps.world.Association;
 import eu.ha3.presencefootsteps.world.SoundsKey;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.sound.BlockSoundGroup;
-
 import java.util.Map;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class AcousticsPlayer implements AcousticLibrary {
     private final Map<String, Acoustic> acoustics = new Object2ObjectOpenHashMap<>();
@@ -39,16 +38,16 @@ public class AcousticsPlayer implements AcousticLibrary {
 
         if (association.dry().isResult()) {
             playAcoustic(association.source(), association.dry(), event, options);
-        } else if (!association.state().isLiquid()) {
-            BlockSoundGroup soundType = association.state().getSoundGroup();
-            BlockState above = association.source().getWorld().getBlockState(association.pos().up());
+        } else if (!association.state().liquid()) {
+            SoundType soundType = association.state().getSoundType();
+            BlockState above = association.source().level().getBlockState(association.pos().above());
 
-            if (above.isOf(Blocks.SNOW)) {
-                soundType = above.getSoundGroup();
+            if (above.is(Blocks.SNOW)) {
+                soundType = above.getSoundType();
             }
 
             soundPlayer.playSound(association.source(),
-                    soundType.getStepSound().id().toString(),
+                    soundType.getStepSound().location().toString(),
                     soundType.getVolume() * 0.15F,
                     soundType.getPitch(),
                     options

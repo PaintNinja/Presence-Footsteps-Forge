@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
-
+import net.minecraft.world.entity.LivingEntity;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
@@ -15,7 +15,6 @@ import eu.ha3.presencefootsteps.sound.player.SoundPlayer;
 import eu.ha3.presencefootsteps.util.JsonObjectWriter;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.entity.LivingEntity;
 
 /**
  * Something that has the ability to play sounds.

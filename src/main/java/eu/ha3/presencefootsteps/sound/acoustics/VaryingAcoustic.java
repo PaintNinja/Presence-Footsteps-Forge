@@ -1,14 +1,13 @@
 package eu.ha3.presencefootsteps.sound.acoustics;
 
 import java.io.IOException;
-
+import net.minecraft.world.entity.LivingEntity;
 import com.google.gson.JsonObject;
 import eu.ha3.presencefootsteps.sound.Options;
 import eu.ha3.presencefootsteps.sound.State;
 import eu.ha3.presencefootsteps.sound.player.SoundPlayer;
 import eu.ha3.presencefootsteps.util.JsonObjectWriter;
 import eu.ha3.presencefootsteps.util.Range;
-import net.minecraft.entity.LivingEntity;
 
 /**
  * The simplest form of an acoustic. Plays one sound with a set volume and pitch range.

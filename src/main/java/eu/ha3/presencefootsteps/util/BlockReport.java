@@ -5,22 +5,21 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.ChatComponent;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.SoundType;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import com.google.gson.stream.JsonWriter;
 import com.minelittlepony.common.util.GamePaths;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.hud.ChatHud;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Util;
-
 public interface BlockReport {
     static CompletableFuture<?> execute(Reportable reportable, String baseName, boolean full) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        ChatHud hud = client.inGameHud.getChatHud();
+        Minecraft client = Minecraft.getInstance();
+        ChatComponent hud = client.gui.getChat();
         return CompletableFuture.supplyAsync(() -> {
             try {
                 Path loc = getUniqueFileName(GamePaths.getGameDirectory().resolve("presencefootsteps"), baseName, ".json");
@@ -32,14 +31,14 @@ public interface BlockReport {
             } catch (IOException e) {
                 throw new RuntimeException("Could not generate report", e);
             }
-        }, Util.getIoWorkerExecutor()).thenAcceptAsync(loc -> {
-            hud.addMessage(Text.translatable("pf.report.save", Text.literal(loc.getFileName().toString()).styled(s -> s
+        }, Util.ioPool()).thenAcceptAsync(loc -> {
+            hud.addMessage(Component.translatable("pf.report.save", Component.literal(loc.getFileName().toString()).withStyle(s -> s
                     .withClickEvent(new ClickEvent.OpenFile(loc.toString()))
-                    .withFormatting(Formatting.UNDERLINE)))
-                .styled(s -> s
-                    .withColor(Formatting.GREEN)));
+                    .applyFormat(ChatFormatting.UNDERLINE)))
+                .withStyle(s -> s
+                    .withColor(ChatFormatting.GREEN)));
         }, client).exceptionallyAsync(e -> {
-            hud.addMessage(Text.translatable("pf.report.error", e.getMessage()).styled(s -> s.withColor(Formatting.RED)));
+            hud.addMessage(Component.translatable("pf.report.error", e.getMessage()).withStyle(s -> s.withColor(ChatFormatting.RED)));
             return null;
         }, client);
     }
@@ -57,6 +56,6 @@ public interface BlockReport {
     }
 
     interface Reportable {
-        void writeToReport(boolean full, JsonObjectWriter writer, Map<String, BlockSoundGroup> groups) throws IOException;
+        void writeToReport(boolean full, JsonObjectWriter writer, Map<String, SoundType> groups) throws IOException;
     }
 }
