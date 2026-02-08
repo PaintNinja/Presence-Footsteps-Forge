@@ -6,18 +6,18 @@ clientSideOnly = true
 
 [[mods]]
 modId = "presencefootsteps"
-version = "1.21.10-1.12.2-beta.1"
+version = "1.21.10-1.12.2"
 displayName = "Presence Footsteps (Forge)"
 displayURL = "https://www.curseforge.com/minecraft/mc-mods/presence-footsteps-forge"
 updateJSONURL = "https://forge.curseupdate.com/433068/presencefootsteps"
 authors = "Hurricaaane, Sollace, Paint_Ninja"
-logoFile="presencefootsteps_logo.png"
+logoFile="logo.png"
 description = "An overly complicated sound mod, ported to Forge."
 
 [[dependencies.presencefootsteps]]
 modId = "forge"
 mandatory = true
-versionRange = "[52.0.47,)"
+versionRange = "[60.1.8,)"
 ordering = "NONE"
 side = "CLIENT"
 

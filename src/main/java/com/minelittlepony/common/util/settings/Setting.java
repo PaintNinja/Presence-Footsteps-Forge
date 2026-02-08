@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
-//import com.minelittlepony.common.client.gui.IField.IChangeCallback;
+import com.minelittlepony.common.client.gui.IField.IChangeCallback;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 /**
  * Any settings.
  */
-public interface Setting<T> extends /*IChangeCallback<T>,*/ Supplier<T> {
+public interface Setting<T> extends IChangeCallback<T>, Supplier<T> {
     String name();
 
     @NotNull
@@ -62,10 +62,10 @@ public interface Setting<T> extends /*IChangeCallback<T>,*/ Supplier<T> {
      */
     void onChanged(Consumer<T> listener);
 
-//    @Override
-//    default T perform(T value) {
-//        return set(value);
-//    }
+    @Override
+    default T perform(T value) {
+        return set(value);
+    }
 
     public record Type<T> (
             Supplier<T> defaultValue,

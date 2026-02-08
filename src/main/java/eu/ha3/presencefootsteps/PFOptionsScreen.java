@@ -1,4 +1,3 @@
-/*
 package eu.ha3.presencefootsteps;
 
 import java.io.IOException;
@@ -70,7 +69,6 @@ class PFOptionsScreen extends GameGui {
         getChildElements().add(content);
 
         addButton(new Label(width / 2, 10)).setCentered().getStyle().setText(getTitle());
-
 
         Toggle disabledToggle = new Toggle(wideLeft, row, config.getDisabled());
         content.addButton(disabledToggle.onChange(disabled -> {
@@ -219,7 +217,6 @@ class PFOptionsScreen extends GameGui {
         });
     }
 
-
     private Component formatVolume(AbstractSlider<Float> slider) {
         if (slider.getValue() <= 0) {
             return VOLUME_MIN;
@@ -238,4 +235,3 @@ class PFOptionsScreen extends GameGui {
         return slider -> Component.translatable(key, (int)Math.floor(slider.getValue()));
     }
 }
-*/

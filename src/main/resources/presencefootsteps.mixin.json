@@ -1,17 +1,19 @@
 {
-    "required": true,
-    "minVersion": "0.7",
-    "package": "eu.ha3.presencefootsteps.mixins",
-    "refmap": "presencefootsteps.mixin.refmap.json",
-    "compatibilityLevel": "JAVA_17",
-    "client": [
-      "MAbstractBlock",
-      "MStairsBlock",
-      "MBlockSettings",
-      "IEntity",
-      "ILivingEntity",
-      "MClientPlayNetworkHandler",
-      "MLivingEntity",
-      "MSoundSystem"
-    ]
+  "required": true,
+  "minVersion": "0.7",
+  "package": "eu.ha3.presencefootsteps.mixins",
+  "refmap": "presencefootsteps.mixin.refmap.json",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "IEntity",
+    "ILivingEntity",
+    "MAbstractBlock",
+    "MBlockSettings",
+    "MClientPlayNetworkHandler",
+    "MLivingEntity",
+    "MMinecraft",
+    "MScreen",
+    "MSoundSystem",
+    "MStairsBlock"
+  ]
 }
