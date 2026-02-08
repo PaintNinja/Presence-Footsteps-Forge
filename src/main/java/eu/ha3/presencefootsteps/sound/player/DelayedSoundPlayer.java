@@ -2,12 +2,11 @@ package eu.ha3.presencefootsteps.sound.player;
 
 import java.util.List;
 import java.util.Random;
-
+import net.minecraft.world.entity.LivingEntity;
 import eu.ha3.presencefootsteps.PresenceFootsteps;
 import eu.ha3.presencefootsteps.sound.Options;
 import eu.ha3.presencefootsteps.util.MathUtil;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.entity.LivingEntity;
 
 public class DelayedSoundPlayer implements SoundPlayer {
     private static final boolean USING_LATENESS = true;

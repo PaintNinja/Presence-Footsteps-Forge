@@ -3,16 +3,15 @@ package eu.ha3.presencefootsteps.world;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.JsonObject;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import net.minecraft.util.Identifier;
 
 abstract class AbstractSubstrateLookup<T> implements Lookup.DataSegment<T> {
-    private final Map<String, Map<Identifier, Optional<SoundsKey>>> substrates = new Object2ObjectLinkedOpenHashMap<>();
+    private final Map<String, Map<ResourceLocation, Optional<SoundsKey>>> substrates = new Object2ObjectLinkedOpenHashMap<>();
 
     protected AbstractSubstrateLookup(JsonObject json) {
         json.entrySet().forEach(entry -> {
@@ -22,24 +21,24 @@ abstract class AbstractSubstrateLookup<T> implements Lookup.DataSegment<T> {
 
             substrates
                 .computeIfAbsent(substrate, s -> new Object2ObjectLinkedOpenHashMap<>())
-                .put(Identifier.of(primitive), Optional.of(SoundsKey.of(entry.getValue().getAsString())));
+                .put(ResourceLocation.parse(primitive), Optional.of(SoundsKey.of(entry.getValue().getAsString())));
         });
     }
 
-    protected abstract Identifier getId(T key);
+    protected abstract ResourceLocation getId(T key);
 
     @Override
     public Optional<SoundsKey> getAssociation(@Nullable T key, String substrate) {
         if (key == null) {
             return Optional.empty();
         }
-        final Identifier id = getId(key);
+        final ResourceLocation id = getId(key);
         return getSubstrateMap(id, substrate).getOrDefault(id, Optional.empty());
     }
 
     @Nullable
-    protected Map<Identifier, Optional<SoundsKey>> getSubstrateMap(Identifier id, String substrate) {
-        Map<Identifier, Optional<SoundsKey>> primitives = substrates.get(substrate);
+    protected Map<ResourceLocation, Optional<SoundsKey>> getSubstrateMap(ResourceLocation id, String substrate) {
+        Map<ResourceLocation, Optional<SoundsKey>> primitives = substrates.get(substrate);
         if (primitives != null) {
             return primitives;
         }
@@ -62,7 +61,7 @@ abstract class AbstractSubstrateLookup<T> implements Lookup.DataSegment<T> {
 
     @Override
     public boolean contains(T key) {
-        final Identifier primitive = getId(key);
+        final ResourceLocation primitive = getId(key);
 
         for (var primitives : substrates.values()) {
             if (primitives.containsKey(primitive)) {

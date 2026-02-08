@@ -2,11 +2,10 @@ package eu.ha3.presencefootsteps.util;
 
 import java.io.IOException;
 import java.util.Random;
-
+import net.minecraft.util.GsonHelper;
 import com.google.gson.JsonObject;
 
 import eu.ha3.presencefootsteps.sound.Options;
-import net.minecraft.util.JsonHelper;
 
 public record Period(long min, long max) implements Options {
     public static final Period ZERO = new Period(0, 0);
@@ -25,8 +24,8 @@ public record Period(long min, long max) implements Options {
         }
 
         return Period.of(
-                JsonHelper.getLong(json, key + "_min", 0),
-                JsonHelper.getLong(json, key + "_max", 0)
+                GsonHelper.getAsLong(json, key + "_min", 0),
+                GsonHelper.getAsLong(json, key + "_max", 0)
         );
     }
 

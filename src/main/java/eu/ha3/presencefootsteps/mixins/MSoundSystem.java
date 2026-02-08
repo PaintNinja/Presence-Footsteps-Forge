@@ -7,20 +7,20 @@ import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import eu.ha3.presencefootsteps.sound.player.ImmediateSoundPlayer;
-import net.minecraft.client.sound.SoundInstance;
-import net.minecraft.client.sound.SoundSystem;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.client.sounds.SoundEngine;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 
-@Mixin(SoundSystem.class)
+@Mixin(SoundEngine.class)
 abstract class MSoundSystem {
     @Shadow
-    abstract float getSoundVolume(@Nullable SoundCategory category);
+    protected abstract float getVolume(@Nullable SoundSource category);
 
-    @Inject(method = "getAdjustedVolume(Lnet/minecraft/client/sound/SoundInstance;)F", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "calculateVolume(Lnet/minecraft/client/resources/sounds/SoundInstance;)F", at = @At("HEAD"), cancellable = true)
     private void onGetAdjustedVolume(SoundInstance sound, CallbackInfoReturnable<Float> info) {
         if (sound instanceof ImmediateSoundPlayer.UncappedSoundInstance t) {
-            info.setReturnValue(MathHelper.clamp(t.getVolume() * getSoundVolume(t.getCategory()), 0, t.getMaxVolume()));
+            info.setReturnValue(Mth.clamp(t.getVolume() * getVolume(t.getSource()), 0, t.getMaxVolume()));
         }
     }
 }
