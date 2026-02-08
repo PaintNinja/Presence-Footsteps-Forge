@@ -15,10 +15,10 @@ import eu.ha3.presencefootsteps.PresenceFootsteps;
 public abstract class MDebugHud {
 
     @Shadow
-    private HitResult block;
+    protected HitResult block;
 
     @Shadow
-    private HitResult liquid;
+    protected HitResult liquid;
 
     @Inject(method = "getSystemInformation", at = @At("RETURN"))
     protected void onGetRightText(CallbackInfoReturnable<List<String>> info) {
