@@ -7,7 +7,6 @@ import eu.ha3.presencefootsteps.sound.SoundEngine;
 import eu.ha3.presencefootsteps.sound.generator.Locomotion;
 import eu.ha3.presencefootsteps.world.PrimitiveLookup;
 import eu.ha3.presencefootsteps.world.SoundsKey;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -19,6 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.fml.ModList;
 
 public class PFDebugHud {
 
@@ -34,7 +34,7 @@ public class PFDebugHud {
         Minecraft client = Minecraft.getInstance();
 
         list.add("");
-        list.add(ChatFormatting.UNDERLINE + "Presence Footsteps " + FabricLoader.getInstance().getModContainer("presencefootsteps").get().getMetadata().getVersion());
+        list.add(ChatFormatting.UNDERLINE + "Presence Footsteps " + ModList.get().getModContainerById("presencefootsteps").get().getModInfo().getVersion());
 
         PFConfig config = engine.getConfig();
         list.add(String.format("Enabled: %s, Multiplayer: %s, Running: %s", config.getEnabled(), config.getEnabledMP(), engine.isRunning(client)));

@@ -1,0 +1,29 @@
+modLoader = "javafml"
+loaderVersion = "[49,)"
+license = "MIT"
+issueTrackerURL = "https://github.com/PaintNinja/Presence-Footsteps-Forge"
+clientSideOnly = true
+
+[[mods]]
+modId = "presencefootsteps"
+version = "1.21.4-1.11.1"
+displayName = "Presence Footsteps (Forge)"
+displayURL = "https://www.curseforge.com/minecraft/mc-mods/presence-footsteps-forge"
+updateJSONURL = "https://forge.curseupdate.com/433068/presencefootsteps"
+authors = "Hurricaaane, Sollace, Paint_Ninja"
+logoFile="logo.png"
+description = "An overly complicated sound mod, ported to Forge."
+
+[[dependencies.presencefootsteps]]
+modId = "forge"
+mandatory = true
+versionRange = "[54.1.13,)"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.presencefootsteps]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.21.4]"
+ordering = "NONE"
+side = "CLIENT"
