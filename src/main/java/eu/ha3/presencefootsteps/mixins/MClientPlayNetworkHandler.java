@@ -14,13 +14,13 @@ import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 @Mixin(ClientPacketListener.class)
 public abstract class MClientPlayNetworkHandler implements ClientGamePacketListener {
 
-    @Inject(method = "onPlaySound(Lnet/minecraft/network/packet/s2c/play/PlaySoundS2CPacket;)V",
-            at = @At(value = "INVOKE", target = "net/minecraft/client/world/ClientWorld.playSound("
-                        + "Lnet/minecraft/entity/player/PlayerEntity;"
-                        + "DDD"
-                        + "Lnet/minecraft/registry/entry/RegistryEntry;"
-                        + "Lnet/minecraft/sound/SoundCategory;"
-                        + "FFJ"
+    @Inject(method = "handleSoundEvent(Lnet/minecraft/network/protocol/game/ClientboundSoundPacket;)V",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientLevel;playSeededSound("
+                    + "Lnet/minecraft/world/entity/Entity;"
+                    + "DDD"
+                    + "Lnet/minecraft/core/Holder;"
+                    + "Lnet/minecraft/sounds/SoundSource;"
+                    + "FFJ"
                     + ")V",
                     shift = Shift.BEFORE
             ),

@@ -15,13 +15,13 @@ import eu.ha3.presencefootsteps.PresenceFootsteps;
 public abstract class MDebugHud {
 
     @Shadow
-    private HitResult blockHit;
+    protected HitResult block;
 
     @Shadow
-    private HitResult fluidHit;
+    protected HitResult liquid;
 
-    @Inject(method = "getRightText", at = @At("RETURN"))
+    @Inject(method = "getSystemInformation", at = @At("RETURN"))
     protected void onGetRightText(CallbackInfoReturnable<List<String>> info) {
-        PresenceFootsteps.getInstance().getDebugHud().render(blockHit, fluidHit, info.getReturnValue());
+        PresenceFootsteps.getInstance().getDebugHud().render(block, liquid, info.getReturnValue());
     }
 }

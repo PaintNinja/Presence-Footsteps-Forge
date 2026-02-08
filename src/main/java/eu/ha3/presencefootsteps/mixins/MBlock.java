@@ -33,7 +33,7 @@ abstract class MAbstractBlock extends BlockBehaviour implements DerivedBlock {
 
 @Mixin(StairBlock.class)
 abstract class MStairsBlock implements DerivedBlock {
-    @Accessor("baseBlockState")
+    @Accessor("baseState")
     @Override
     public abstract BlockState getBaseBlockState();
 }
@@ -54,7 +54,7 @@ abstract class MBlockSettings implements DerivedBlock.Settings {
         return baseBlock;
     }
 
-    @Inject(method = "copy", at = @At("RETURN"))
+    @Inject(method = "ofFullCopy", at = @At("RETURN"))
     private static void onCopy(BlockBehaviour block, CallbackInfoReturnable<Properties> info) {
         if (block instanceof Block b) {
             ((DerivedBlock.Settings)info.getReturnValue()).setBaseBlock(b);

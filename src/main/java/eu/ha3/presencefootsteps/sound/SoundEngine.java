@@ -9,6 +9,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.stream.Stream;
 
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 import org.jetbrains.annotations.Nullable;
 
 import com.mojang.datafixers.util.Unit;
@@ -19,7 +20,6 @@ import eu.ha3.presencefootsteps.sound.player.ImmediateSoundPlayer;
 import eu.ha3.presencefootsteps.util.PlayerUtil;
 import eu.ha3.presencefootsteps.world.Solver;
 import eu.ha3.presencefootsteps.world.PFSolver;
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
@@ -45,7 +45,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.entity.vehicle.Boat;
 
-public class SoundEngine implements IdentifiableResourceReloadListener {
+public class SoundEngine implements PreparableReloadListener {
     private static final ResourceLocation ID = PresenceFootsteps.id("sounds");
     private static final Set<ResourceLocation> BLOCKED_PLAYER_SOUNDS = Set.of(
             SoundEvents.PLAYER_SWIM.location(),
@@ -127,7 +127,7 @@ public class SoundEngine implements IdentifiableResourceReloadListener {
     }
 
     private Stream<? extends Entity> getTargets(final Entity cameraEntity) {
-        final List<? extends Entity> entities = cameraEntity.level().getEntities(null, cameraEntity.getBoundingBox().inflate(16), e -> {
+        final List<? extends Entity> entities = cameraEntity.level().getEntities((Entity) null, cameraEntity.getBoundingBox().inflate(16), e -> {
             return e instanceof LivingEntity
                     && !config.isIgnoredForFootsteps(e.getType())
                     && !(e instanceof WaterAnimal)
@@ -195,11 +195,6 @@ public class SoundEngine implements IdentifiableResourceReloadListener {
 
         return BLOCKED_PLAYER_SOUNDS.contains(sound)
                 || (packet.getSource() == SoundSource.PLAYERS && sound.equals(stepAtPos.location()));
-    }
-
-    @Override
-    public ResourceLocation getFabricId() {
-        return ID;
     }
 
     @Override

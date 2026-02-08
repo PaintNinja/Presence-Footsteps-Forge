@@ -4,29 +4,32 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.common.util.Lazy;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-import com.minelittlepony.common.util.GamePaths;
 import com.mojang.blaze3d.platform.InputConstants;
 import eu.ha3.presencefootsteps.sound.SoundEngine;
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.PackType;
 
-public class PresenceFootsteps implements ClientModInitializer {
+@Mod(PresenceFootsteps.MODID)
+public class PresenceFootsteps {
     public static final Logger logger = LogManager.getLogger("PFSolver");
 
-    private static final String MODID = "presencefootsteps";
+    static final String MODID = "presencefootsteps";
     private static final String KEY_BINDING_CATEGORY = "key.category." + MODID;
 
     public static final Component MOD_NAME = Component.translatable("mod.presencefootsteps.name");
@@ -47,14 +50,15 @@ public class PresenceFootsteps implements ClientModInitializer {
 
     private PFDebugHud debugHud;
 
-    private KeyMapping optionsKeyBinding;
-    private KeyMapping toggleKeyBinding;
+    private @Nullable Lazy<KeyMapping> optionsKeyBinding = null;
+    private @Nullable Lazy<KeyMapping> toggleKeyBinding = null;
     private boolean toggleTriggered;
 
     private final AtomicBoolean configChanged = new AtomicBoolean();
 
-    public PresenceFootsteps() {
+    public PresenceFootsteps(FMLJavaModLoadingContext ctx) {
         instance = this;
+        onInitializeClient(ctx);
     }
 
     public PFDebugHud getDebugHud() {
@@ -70,25 +74,29 @@ public class PresenceFootsteps implements ClientModInitializer {
     }
 
     public KeyMapping getOptionsKeyBinding() {
-        return optionsKeyBinding;
+        return optionsKeyBinding.get();
     }
 
-    @Override
-    public void onInitializeClient() {
-        Path pfFolder = GamePaths.getConfigDirectory().resolve("presencefootsteps");
+    public void onInitializeClient(FMLJavaModLoadingContext ctx) {
+        Path pfFolder = FMLPaths.CONFIGDIR.get().resolve("presencefootsteps");
 
         config = new PFConfig(pfFolder.resolve("userconfig.json"), this);
         config.load();
         config.onChangedExternally(c -> configChanged.set(true));
 
-        optionsKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.presencefootsteps.settings", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_F10, KEY_BINDING_CATEGORY));
-        toggleKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.presencefootsteps.toggle", InputConstants.Type.KEYSYM, InputConstants.UNKNOWN.getValue(), KEY_BINDING_CATEGORY));
+        RegisterKeyMappingsEvent.getBus(ctx.getModBusGroup()).addListener(event -> {
+            optionsKeyBinding = Lazy.of(() -> new KeyMapping("key.presencefootsteps.settings", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_F10, KEY_BINDING_CATEGORY));
+            toggleKeyBinding = Lazy.of(() -> new KeyMapping("key.presencefootsteps.toggle", InputConstants.Type.KEYSYM, InputConstants.UNKNOWN.getValue(), KEY_BINDING_CATEGORY));
+
+            event.register(optionsKeyBinding.get());
+            event.register(toggleKeyBinding.get());
+        });
 
         engine = new SoundEngine(config);
         debugHud = new PFDebugHud(engine);
 
-        ClientTickEvents.END_CLIENT_TICK.register(this::onTick);
-        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(engine);
+        TickEvent.ClientTickEvent.Post.BUS.addListener(event -> onTick(Minecraft.getInstance()));
+        RegisterClientReloadListenersEvent.getBus(ctx.getModBusGroup()).addListener(event -> event.registerReloadListener(engine));
     }
 
     private void onTick(Minecraft client) {
@@ -99,10 +107,10 @@ public class PresenceFootsteps implements ClientModInitializer {
         Optional.ofNullable(client.player).filter(e -> !e.isRemoved()).ifPresent(cameraEntity -> {
 
             if (client.screen == null) {
-                if (optionsKeyBinding.isDown()) {
+                if (optionsKeyBinding.get().isDown()) {
                     client.setScreen(new PFOptionsScreen(client.screen));
                 }
-                if (toggleKeyBinding.isDown()) {
+                if (toggleKeyBinding.get().isDown()) {
                     if (!toggleTriggered) {
                         toggleTriggered = true;
                         config.toggleDisabled();

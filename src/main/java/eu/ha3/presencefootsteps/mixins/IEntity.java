@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 @Mixin(Entity.class)
 abstract class IEntity {
-    @Inject(method = "playStepSounds", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "walkingStepSound", at = @At("HEAD"), cancellable = true)
     private void playStepSounds(BlockPos pos, BlockState state, CallbackInfo info) {
         if (this instanceof StepSoundSource s && s.isStepBlocked()) {
             info.cancel();
