@@ -2,11 +2,9 @@ package eu.ha3.presencefootsteps.util;
 
 import java.io.IOException;
 import java.util.Random;
-
+import net.minecraft.util.Mth;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
-import net.minecraft.util.math.MathHelper;
 
 public record Range (float min, float max) {
     public static final Range DEFAULT = exactly(1);
@@ -37,7 +35,7 @@ public record Range (float min, float max) {
     }
 
     public void write(JsonObjectWriter writer) throws IOException {
-        if (MathHelper.approximatelyEquals(min, max)) {
+        if (Mth.equal(min, max)) {
             writer.writer().value(min * 100);
         } else {
             writer.object(() -> {

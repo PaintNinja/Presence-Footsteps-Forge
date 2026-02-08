@@ -1,7 +1,7 @@
 package eu.ha3.presencefootsteps.config;
 
 import java.lang.reflect.Type;
-
+import net.minecraft.util.Mth;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -9,8 +9,6 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.minelittlepony.common.client.gui.IField.IChangeCallback;
-
-import net.minecraft.util.math.MathHelper;
 
 public class VolumeOption implements IChangeCallback<Float> {
 
@@ -24,7 +22,7 @@ public class VolumeOption implements IChangeCallback<Float> {
     }
 
     public int get() {
-        return MathHelper.clamp(value, 0, 100);
+        return Mth.clamp(value, 0, 100);
     }
 
     public float getPercentage() {

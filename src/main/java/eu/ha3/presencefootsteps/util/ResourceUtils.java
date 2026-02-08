@@ -7,7 +7,10 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
-
+import net.minecraft.resources.FileToIdConverter;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.JsonObject;
@@ -15,45 +18,41 @@ import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonReader;
 
 import eu.ha3.presencefootsteps.PresenceFootsteps;
-import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourceFinder;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
 
 public interface ResourceUtils {
-    static boolean forEach(Identifier id, ResourceManager manager, Consumer<Reader> consumer) {
-        return manager.getAllResources(id).stream().mapToInt(res -> {
-            try (Reader stream = new InputStreamReader(res.getInputStream())) {
+    static boolean forEach(ResourceLocation id, ResourceManager manager, Consumer<Reader> consumer) {
+        return manager.getResourceStack(id).stream().mapToInt(res -> {
+            try (Reader stream = new InputStreamReader(res.open())) {
                 consumer.accept(stream);
                 return 1;
             } catch (Exception e) {
-                PresenceFootsteps.logger.error("Error encountered loading resource " + id + " from pack" + res.getPackId(), e);
+                PresenceFootsteps.logger.error("Error encountered loading resource " + id + " from pack" + res.sourcePackId(), e);
                 return 0;
             }
         }).sum() > 0;
     }
 
-    static <T> Stream<T> load(Identifier id, ResourceManager manager, Function<JsonObject, T> reader) {
-        return load(id, manager.getAllResources(id).stream(), reader);
+    static <T> Stream<T> load(ResourceLocation id, ResourceManager manager, Function<JsonObject, T> reader) {
+        return load(id, manager.getResourceStack(id).stream(), reader);
     }
 
-    static <T> Stream<T> load(Identifier id, Stream<Resource> resources, Function<JsonObject, T> reader) {
+    static <T> Stream<T> load(ResourceLocation id, Stream<Resource> resources, Function<JsonObject, T> reader) {
         return resources.map(res -> {
-            try (JsonReader stream = new JsonReader(new InputStreamReader(res.getInputStream()))) {
+            try (JsonReader stream = new JsonReader(new InputStreamReader(res.open()))) {
                 return reader.apply(Streams.parse(stream).getAsJsonObject());
             } catch (Exception e) {
-                PresenceFootsteps.logger.error("Error encountered loading resource " + id + " from pack" + res.getPackId(), e);
+                PresenceFootsteps.logger.error("Error encountered loading resource " + id + " from pack" + res.sourcePackId(), e);
                 return (T)null;
             }
         }).filter(Objects::nonNull);
     }
 
     @SuppressWarnings("unchecked")
-    static <T, K, V> Map<K, V> loadDir(ResourceFinder finder, ResourceManager manager,
+    static <T, K, V> Map<K, V> loadDir(FileToIdConverter finder, ResourceManager manager,
             Function<JsonObject, T> reader,
-            Function<Identifier, @Nullable K> keyMapper,
+            Function<ResourceLocation, @Nullable K> keyMapper,
             Function<Stream<T>, @Nullable V> valueMapper) {
-        return Map.ofEntries(finder.findAllResources(manager).entrySet().stream()
+        return Map.ofEntries(finder.listMatchingResourceStacks(manager).entrySet().stream()
                 .map(entry -> {
                     K k = keyMapper.apply(entry.getKey());
                     if (k == null) {

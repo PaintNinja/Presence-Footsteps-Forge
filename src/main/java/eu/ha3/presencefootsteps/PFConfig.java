@@ -1,13 +1,12 @@
 package eu.ha3.presencefootsteps;
 
 import java.nio.file.Path;
-
+import net.minecraft.CrashReportCategory;
+import net.minecraft.util.Mth;
 import eu.ha3.presencefootsteps.config.EntitySelector;
 import eu.ha3.presencefootsteps.config.JsonFile;
 import eu.ha3.presencefootsteps.config.VolumeOption;
 import eu.ha3.presencefootsteps.sound.generator.Locomotion;
-import net.minecraft.util.crash.CrashReportSection;
-import net.minecraft.util.math.MathHelper;
 
 public class PFConfig extends JsonFile {
 
@@ -129,11 +128,11 @@ public class PFConfig extends JsonFile {
     }
 
     public int getGlobalVolume() {
-        return MathHelper.clamp(volume, 0, 100);
+        return Mth.clamp(volume, 0, 100);
     }
 
     public int getRunningVolumeIncrease() {
-        return MathHelper.clamp(runningVolumeIncrease, -100, 100);
+        return Mth.clamp(runningVolumeIncrease, -100, 100);
     }
 
     public float setGlobalVolume(float volume) {
@@ -159,13 +158,13 @@ public class PFConfig extends JsonFile {
         return getRunningVolumeIncrease();
     }
 
-    public void populateCrashReport(CrashReportSection section) {
-        section.add("Disabled", getDisabled());
-        section.add("Global Volume", volume);
-        section.add("User's Selected Stance", getLocomotion());
-        section.add("Target Selector", getEntitySelector());
-        section.add("Enabled Global", global);
-        section.add("Enabled Multiplayer", multiplayer);
+    public void populateCrashReport(CrashReportCategory section) {
+        section.setDetail("Disabled", getDisabled());
+        section.setDetail("Global Volume", volume);
+        section.setDetail("User's Selected Stance", getLocomotion());
+        section.setDetail("Target Selector", getEntitySelector());
+        section.setDetail("Enabled Global", global);
+        section.setDetail("Enabled Multiplayer", multiplayer);
     }
 
     private static int volumeScaleToInt(float volume) {

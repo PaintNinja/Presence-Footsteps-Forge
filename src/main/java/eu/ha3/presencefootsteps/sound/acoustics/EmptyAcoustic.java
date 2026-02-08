@@ -1,12 +1,11 @@
 package eu.ha3.presencefootsteps.sound.acoustics;
 
 import java.io.IOException;
-
+import net.minecraft.world.entity.LivingEntity;
 import eu.ha3.presencefootsteps.sound.Options;
 import eu.ha3.presencefootsteps.sound.State;
 import eu.ha3.presencefootsteps.sound.player.SoundPlayer;
 import eu.ha3.presencefootsteps.util.JsonObjectWriter;
-import net.minecraft.entity.LivingEntity;
 
 record EmptyAcoustic() implements Acoustic {
     static Acoustic INSTANCE = new EmptyAcoustic();
