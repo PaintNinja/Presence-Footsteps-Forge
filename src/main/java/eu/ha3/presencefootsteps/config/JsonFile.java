@@ -19,7 +19,7 @@ import eu.ha3.presencefootsteps.PresenceFootsteps;
  */
 public abstract class JsonFile {
     private transient final Gson gson = new GsonBuilder()
-            .registerTypeAdapter(getClass(), (InstanceCreator<JsonFile>)t -> this)
+            .registerTypeAdapter(getClass(), (InstanceCreator<JsonFile>)_ -> this)
             .setPrettyPrinting()
             .create();
 

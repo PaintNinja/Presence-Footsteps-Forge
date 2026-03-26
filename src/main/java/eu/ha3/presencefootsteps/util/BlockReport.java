@@ -38,13 +38,13 @@ public interface BlockReport {
                 throw new RuntimeException("Could not generate report", e);
             }
         }, Util.ioPool()).thenAcceptAsync(loc -> {
-            hud.addMessage(Component.translatable("pf.report.save", Component.literal(loc.getFileName().toString()).withStyle(s -> s
+            hud.addClientSystemMessage(Component.translatable("pf.report.save", Component.literal(loc.getFileName().toString()).withStyle(s -> s
                     .withClickEvent(new ClickEvent.OpenFile(loc.toString()))
                     .withUnderlined(true)))
                 .withStyle(s -> s
                     .withColor(ChatFormatting.GREEN)));
         }, client).exceptionallyAsync(e -> {
-            hud.addMessage(Component.translatable("pf.report.error", e.getMessage()).withStyle(s -> s.withColor(ChatFormatting.RED)));
+            hud.addClientSystemMessage(Component.translatable("pf.report.error", e.getMessage()).withStyle(s -> s.withColor(ChatFormatting.RED)));
             return null;
         }, client);
     }

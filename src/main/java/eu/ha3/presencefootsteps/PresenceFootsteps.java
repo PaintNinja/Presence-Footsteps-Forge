@@ -26,7 +26,7 @@ import eu.ha3.presencefootsteps.sound.SoundEngine;
 import eu.ha3.presencefootsteps.util.Edge;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.packs.PackType;
@@ -56,7 +56,7 @@ public class PresenceFootsteps implements ClientModInitializer {
     private final PFDebugHud debugHud = new PFDebugHud(engine);
 
     private final UpdaterConfig updaterConfig = new UpdaterConfig(pfFolder.resolve("updater.json"));
-    private final UpdateChecker updater = new UpdateChecker(updaterConfig, MODID, UPDATER_ENDPOINT, (newVersion, currentVersion) -> {
+    private final UpdateChecker updater = new UpdateChecker(updaterConfig, MODID, UPDATER_ENDPOINT, (newVersion, _) -> {
         showSystemToast(
                 Component.translatable("pf.update.title"),
                 Component.translatable("pf.update.text", newVersion.version().getFriendlyString(), newVersion.minecraft().getFriendlyString())
@@ -107,13 +107,13 @@ public class PresenceFootsteps implements ClientModInitializer {
     public void onInitializeClient() {
         updaterConfig.load();
         config.load();
-        config.onChangedExternally(c -> configChanged.set(true));
+        config.onChangedExternally(_ -> configChanged.set(true));
 
-        KeyBindingHelper.registerKeyBinding(optionsKeyBinding);
-        KeyBindingHelper.registerKeyBinding(toggleKeyBinding);
-        KeyBindingHelper.registerKeyBinding(debugToggleKeyBinding);
+        KeyMappingHelper.registerKeyMapping(optionsKeyBinding);
+        KeyMappingHelper.registerKeyMapping(toggleKeyBinding);
+        KeyMappingHelper.registerKeyMapping(debugToggleKeyBinding);
         ClientTickEvents.END_CLIENT_TICK.register(this::onTick);
-        ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloader(SoundEngine.ID, engine);
+        ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloadListener(SoundEngine.ID, engine);
         DebugScreenEntries.register(PFDebugHud.ID, debugHud);
     }
 

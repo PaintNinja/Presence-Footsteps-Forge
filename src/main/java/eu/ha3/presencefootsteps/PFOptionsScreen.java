@@ -32,7 +32,7 @@ import eu.ha3.presencefootsteps.sound.acoustics.Acoustic;
 import eu.ha3.presencefootsteps.sound.acoustics.AcousticsFile;
 import eu.ha3.presencefootsteps.util.BlockReport;
 import eu.ha3.presencefootsteps.util.ResourceUtils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.packs.PackSelectionScreen;
 import net.minecraft.network.chat.Component;
@@ -76,9 +76,7 @@ class PFOptionsScreen extends GameGui {
         redrawUpdateButton(addButton(new Button(width - 30, height - 25, 25, 20)).onClick(sender -> {
             sender.setEnabled(false);
             sender.getStyle().setTooltip("pf.update.checking");
-            PresenceFootsteps.getInstance().getUpdateChecker().checkNow().thenAccept(newVersions -> {
-                redrawUpdateButton(sender);
-            });
+            PresenceFootsteps.getInstance().getUpdateChecker().checkNow().thenAccept(_ -> redrawUpdateButton(sender));
         }));
 
         Toggle disabledToggle = new Toggle(wideLeft, row, config.getDisabled());
@@ -143,7 +141,7 @@ class PFOptionsScreen extends GameGui {
 
         content.addButton(new Label(wideLeft, row += 25)).getStyle().setText("menu.pf.group.sound_packs");
 
-        content.addButton(new Button(wideLeft, row += 25, 150, 20).onClick(sender -> {
+        content.addButton(new Button(wideLeft, row += 25, 150, 20).onClick(_ -> {
             minecraft.setScreen(new PackSelectionScreen(
                     minecraft.getResourcePackRepository(),
                     repo -> {
@@ -206,7 +204,7 @@ class PFOptionsScreen extends GameGui {
                     .setTooltip("menu.pf.report-acoustics.tooltip");
 
         addButton(new Button(left, height - 25)
-            .onClick(sender -> finish())).getStyle()
+            .onClick(_ -> finish())).getStyle()
             .setText("gui.done");
 
         updateDisableState(disabledToggle, disabledToggle.getValue());
@@ -252,9 +250,9 @@ class PFOptionsScreen extends GameGui {
     }
 
     @Override
-    public void render(GuiGraphics context, int mouseX, int mouseY, float tickDelta) {
-        super.render(context, mouseX, mouseY, tickDelta);
-        content.render(context, mouseX, mouseY, tickDelta);
+    public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float tickDelta) {
+        super.extractRenderState(context, mouseX, mouseY, tickDelta);
+        content.extractRenderState(context, mouseX, mouseY, tickDelta);
     }
 
     static Function<AbstractSlider<Float>, Component> formatVolume(String key) {

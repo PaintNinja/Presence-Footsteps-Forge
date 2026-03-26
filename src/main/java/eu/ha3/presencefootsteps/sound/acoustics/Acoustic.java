@@ -105,8 +105,10 @@ public interface Acoustic {
 
     @Deprecated
     public interface Serializer {
+        @Deprecated
         Acoustic create(JsonElement json, AcousticsFile context);
 
+        @Deprecated
         static Serializer ofJsObject(BiFunction<JsonObject, AcousticsFile, Acoustic> factory) {
             return (json, context) -> factory.apply(json.getAsJsonObject(), context);
         }

@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -145,12 +146,12 @@ public record StateLookup(Map<String, Bucket> substrates) implements Lookup.Data
     }
 
     private static String getTagData(BlockState state) {
-        return state.getBlockHolder().tags().map(TagKey::location).map(Identifier::toString).collect(Collectors.joining(","));
+        return state.typeHolder().tags().map(TagKey::location).map(Identifier::toString).collect(Collectors.joining(","));
     }
 
     private interface Bucket {
 
-        Bucket EMPTY = state -> Key.NULL;
+        Bucket EMPTY = _ -> Key.NULL;
 
         default void add(Key key) {}
 
@@ -192,9 +193,8 @@ public record StateLookup(Map<String, Bucket> substrates) implements Lookup.Data
                 return getTile(state).contains(state) || wildcards.findMatch(state) != Key.NULL;
             }
 
-            @SuppressWarnings("deprecation")
             private Bucket getTile(BlockState state) {
-                return blocks.computeIfAbsent(state.getBlock().builtInRegistryHolder().unwrapKey().get().identifier(), id -> {
+                return blocks.computeIfAbsent(state.typeHolder().unwrapKey().get().identifier(), _ -> {
                     for (Identifier tag : tags.keySet()) {
                         if (state.is(TagKey.create(Registries.BLOCK, tag))) {
                             return tags.get(tag);
@@ -322,13 +322,12 @@ public record StateLookup(Map<String, Bucket> substrates) implements Lookup.Data
                 return true;
             }
 
-            Map<Property<?>, Comparable<?>> entries = state.getValues();
-            Set<Property<?>> keys = entries.keySet();
+            Collection<Property<?>> keys = state.getProperties();
 
             for (Attribute property : properties) {
                 for (Property<?> key : keys) {
                     if (key.getName().equals(property.name)) {
-                        Comparable<?> value = entries.get(key);
+                        Comparable<?> value = state.getValue(key);
 
                         if (!Objects.toString(value).equalsIgnoreCase(property.value)) {
                             return false;

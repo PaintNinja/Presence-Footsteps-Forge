@@ -85,12 +85,12 @@ public class PFDebugHud implements DebugScreenEntry {
                     || state.getFluidState().is(FluidTags.WATER)
                     || client.level.getBlockState(above).getFluidState().is(FluidTags.WATER);
 
-            finalList.addToGroup(DebugScreenEntries.LOOKING_AT_BLOCK, List.of("", ChatFormatting.UNDERLINE + "Targeted Block Sounds Like"));
+            finalList.addToGroup(DebugScreenEntries.LOOKING_AT_BLOCK_STATE, List.of("", ChatFormatting.UNDERLINE + "Targeted Block Sounds Like"));
 
             if (!base.isAir()) {
-                finalList.addToGroup(DebugScreenEntries.LOOKING_AT_BLOCK, BuiltInRegistries.BLOCK.getKey(base.getBlock()).toString());
+                finalList.addToGroup(DebugScreenEntries.LOOKING_AT_BLOCK_STATE, BuiltInRegistries.BLOCK.getKey(base.getBlock()).toString());
             }
-            finalList.addToGroup(DebugScreenEntries.LOOKING_AT_BLOCK, List.of(
+            finalList.addToGroup(DebugScreenEntries.LOOKING_AT_BLOCK_STATE, List.of(
                     String.format(Locale.ENGLISH, "Primitive Key: %s", PrimitiveLookup.getKey(state.getSoundType())),
                     "Surface Condition: " + (
                             hasLava ? ChatFormatting.RED + "LAVA"
@@ -98,9 +98,9 @@ public class PFDebugHud implements DebugScreenEntry {
                                     : hasRain ? ChatFormatting.GRAY + "SHELTERED" : ChatFormatting.GRAY + "DRY"
                     )
             ));
-            finalList.addToGroup(DebugScreenEntries.LOOKING_AT_BLOCK, renderSoundList("Step Sounds[B]", engine.getIsolator().globalBlocks().getAssociations(state)));
-            finalList.addToGroup(DebugScreenEntries.LOOKING_AT_BLOCK, renderSoundList("Step Sounds[P]", engine.getIsolator().primitives().getAssociations(state.getSoundType().getStepSound())));
-            finalList.addToGroup(DebugScreenEntries.LOOKING_AT_BLOCK, "");
+            finalList.addToGroup(DebugScreenEntries.LOOKING_AT_BLOCK_STATE, renderSoundList("Step Sounds[B]", engine.getIsolator().globalBlocks().getAssociations(state)));
+            finalList.addToGroup(DebugScreenEntries.LOOKING_AT_BLOCK_STATE, renderSoundList("Step Sounds[P]", engine.getIsolator().primitives().getAssociations(state.getSoundType().getStepSound())));
+            finalList.addToGroup(DebugScreenEntries.LOOKING_AT_BLOCK_STATE, "");
         }
 
         if (client.hitResult instanceof EntityHitResult ehr && ehr.getEntity() != null) {

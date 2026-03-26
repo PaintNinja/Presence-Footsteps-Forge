@@ -19,12 +19,12 @@ public enum Locomotion {
     FLYING((entity, engine) -> new WingedStepSoundGenerator(entity, engine, new QuadrupedModifier())),
     FLYING_BIPED((entity, engine) -> new WingedStepSoundGenerator(entity, engine, new Modifier<>()));
 
-    private static final Map<String, Locomotion> registry = new Object2ObjectOpenHashMap<>();
+    private static final Map<String, Locomotion> REGISTRY = new Object2ObjectOpenHashMap<>();
 
     static {
         for (Locomotion i : values()) {
-            registry.put(i.name(), i);
-            registry.put(String.valueOf(i.ordinal()), i);
+            REGISTRY.put(i.name(), i);
+            REGISTRY.put(String.valueOf(i.ordinal()), i);
         }
     }
 
@@ -34,7 +34,7 @@ public enum Locomotion {
     private final String translationKey = "menu.pf.stance." + name().toLowerCase(Locale.ROOT);
 
     Locomotion() {
-        constructor = (entity, engine) -> Optional.empty();
+        constructor = (_, _) -> Optional.empty();
     }
 
     Locomotion(BiFunction<LivingEntity, SoundEngine, StepSoundGenerator> gen) {
@@ -54,7 +54,7 @@ public enum Locomotion {
     }
 
     public static Locomotion byName(String name) {
-        return registry.getOrDefault(name, BIPED);
+        return REGISTRY.getOrDefault(name, BIPED);
     }
 
     public static Locomotion forLiving(Entity entity, Locomotion fallback) {
