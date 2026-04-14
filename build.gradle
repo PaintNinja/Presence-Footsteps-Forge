@@ -64,7 +64,7 @@ dependencies {
     if (project.use_minelp == '1') {
       compileOnly "com.minelittlepony:minelittlepony:${project.minelp_version}"
     } else {
-      compileOnly "com.minelittlepony:minelittlepony-dummy:${project.minelp_version}"
+      compileOnly "com.minelittlepony:minelittlepony:${project.minelp_version}:api"
     }
     compileOnly("com.terraformersmc:modmenu:${project.modmenu_version}")
 }
