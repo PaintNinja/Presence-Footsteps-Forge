@@ -3,6 +3,7 @@ package eu.ha3.presencefootsteps.sound.generator;
 import eu.ha3.presencefootsteps.config.Variator;
 import eu.ha3.presencefootsteps.sound.State;
 import eu.ha3.presencefootsteps.util.PlayerUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -63,8 +64,16 @@ public class MotionTracker {
             motionX = ply.getDeltaMovement().x;
             motionY = ply.getDeltaMovement().y;
             motionZ = ply.getDeltaMovement().z;
-            distanceTraveled = ply.moveDist;
-            fallDistance = ply.fallDistance;
+
+            if (Minecraft.getInstance().isSingleplayer()) {
+                distanceTraveled = ply.moveDist;
+                fallDistance = ply.fallDistance;
+            } else {
+                // On dedicated servers, the local player's distance counter does not
+                // advance like it does in singleplayer. Use the same motion-based
+                // accumulation model we already use for remote players.
+                accumulateSimulatedDistance(ply, false);
+            }
         } else {
             // Other players don't send their motion data so we have to make our own
             // approximations.
@@ -83,20 +92,7 @@ public class MotionTracker {
         }
 
         if (ply instanceof RemotePlayer other) {
-            if (ply.level().getGameTime() % 1 == 0) {
-
-                if (motionX != 0 || motionZ != 0) {
-                    distanceTraveled += Math.sqrt(Math.pow(motionX, 2) + Math.pow(motionY, 2) + Math.pow(motionZ, 2)) * 0.8;
-                } else {
-                    distanceTraveled += Math.sqrt(Math.pow(motionX, 2) + Math.pow(motionZ, 2)) * 0.8;
-                }
-
-                if (ply.onGround() || ply.isPassenger() || other.getAbilities().flying || motionY > 0) {
-                    fallDistance = 0;
-                } else if (motionY < 0) {
-                    fallDistance -= motionY;
-                }
-            }
+            accumulateSimulatedDistance(ply, other.getAbilities().flying);
         }
 
         if (!(ply instanceof Player)) {
@@ -124,5 +120,23 @@ public class MotionTracker {
         double relativeSpeed = getHorizontalSpeed() + (getMotionY() * getMotionY()) - variator.RUNNING_RAMPUP_BEGIN;
         double maxSpeed = variator.RUNNING_RAMPUP_END - variator.RUNNING_RAMPUP_BEGIN;
         return (float)Mth.clamp(relativeSpeed / maxSpeed, 0, 1);
+    }
+
+    private void accumulateSimulatedDistance(LivingEntity ply, boolean flying) {
+        if (ply.level().getGameTime() % 1 != 0) {
+            return;
+        }
+
+        if (motionX != 0 || motionZ != 0) {
+            distanceTraveled += Math.sqrt(Math.pow(motionX, 2) + Math.pow(motionY, 2) + Math.pow(motionZ, 2)) * 0.8;
+        } else {
+            distanceTraveled += Math.sqrt(Math.pow(motionX, 2) + Math.pow(motionZ, 2)) * 0.8;
+        }
+
+        if (ply.onGround() || ply.isPassenger() || flying || motionY > 0) {
+            fallDistance = 0;
+        } else if (motionY < 0) {
+            fallDistance -= motionY;
+        }
     }
 }
