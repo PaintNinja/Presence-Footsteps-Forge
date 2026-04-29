@@ -84,7 +84,7 @@ public class DelayedSoundPlayer implements SoundPlayer {
             switch (nextState(currentTime)) {
                 case PLAYING:
                     immediate.playSound(location, soundName, volume, pitch, options);
-                    return false;
+                    return true;
                 case SKIPPING:
                     return true;
                 default:
