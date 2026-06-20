@@ -100,6 +100,9 @@ public class SoundEngine implements PreparableReloadListener {
     }
 
     public boolean isEnabledFor(Entity entity) {
+        if (!config.isExclusiveMode() && !(entity instanceof Player)) {
+            return false;
+        }
         return hasData() && isRunning(Minecraft.getInstance()) && config.getEntitySelector().test(entity);
     }
 
