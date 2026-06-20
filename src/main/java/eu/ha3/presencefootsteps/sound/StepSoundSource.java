@@ -35,6 +35,9 @@ public interface StepSoundSource {
 
         @Override
         public boolean isStepBlocked() {
+            if (!entity.level().isClientSide() && entity.level().getServer().isPublished()) {
+                return false; // We don't block server-produced sound because this can impact other players in lan games if their config/mod install doesn't match
+            }
             SoundEngine engine = PresenceFootsteps.getInstance().getEngine();
             return engine.isEnabledFor(entity) && getStepGenerator(engine).isPresent();
         }

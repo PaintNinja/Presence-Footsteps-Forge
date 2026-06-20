@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 abstract class IEntity {
     @Inject(method = "walkingStepSound", at = @At("HEAD"), cancellable = true)
     private void onPlayStepSounds(BlockPos pos, BlockState state, CallbackInfo info) {
-        if (this instanceof StepSoundSource s && s.isStepBlocked() && ((Entity)(Object)this).level().isClientSide()) {
+        if (this instanceof StepSoundSource s && s.isStepBlocked()) {
             info.cancel();
         }
     }
