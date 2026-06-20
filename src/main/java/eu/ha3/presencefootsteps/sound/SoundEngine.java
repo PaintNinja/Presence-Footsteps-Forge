@@ -52,7 +52,8 @@ public class SoundEngine implements PreparableReloadListener {
             SoundEvents.PLAYER_SWIM.location(),
             SoundEvents.PLAYER_SPLASH.location(),
             SoundEvents.PLAYER_BIG_FALL.location(),
-            SoundEvents.PLAYER_SMALL_FALL.location()
+            SoundEvents.PLAYER_SMALL_FALL.location(),
+            SoundEvents.PLAYER_SPLASH_HIGH_SPEED.location()
     );
 
     private Isolator isolator = new Isolator(this);
@@ -124,7 +125,7 @@ public class SoundEngine implements PreparableReloadListener {
     public boolean isActive(Minecraft client) {
         return hasData()
                 && config.getEnabled()
-                && (client.isSingleplayer() || config.getEnabledMP());
+                && (client.isLocalServer() || config.getEnabledMP());
     }
 
     private Stream<? extends Entity> getTargets(final Entity cameraEntity) {

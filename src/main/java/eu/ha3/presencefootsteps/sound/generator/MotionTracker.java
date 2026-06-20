@@ -65,7 +65,7 @@ public class MotionTracker {
             motionY = ply.getDeltaMovement().y;
             motionZ = ply.getDeltaMovement().z;
 
-            if (Minecraft.getInstance().isSingleplayer()) {
+            if (Minecraft.getInstance().isLocalServer()) {
                 distanceTraveled = ply.moveDist;
                 fallDistance = ply.fallDistance;
             } else {

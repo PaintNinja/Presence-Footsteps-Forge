@@ -38,7 +38,7 @@ public final class ImmediateSoundPlayer implements SoundPlayer {
         pitch *= options.getOrDefault("pitch_percentage", 1F);
 
         Minecraft mc = Minecraft.getInstance();
-        double distance = mc.gameRenderer.getMainCamera().position().distanceToSqr(location.position());
+        double distance = mc.gameRenderer.mainCamera().position().distanceToSqr(location.position());
 
         volume *= engine.getVolumeForSource(location);
         pitch /= ((PlayerUtil.getScale(location) - 1) * 0.6F) + 1;

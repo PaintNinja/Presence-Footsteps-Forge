@@ -29,6 +29,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -65,7 +66,7 @@ public record Isolator (
     }
 
     public Lookup<BlockState> blocks(EntityType<?> sourceType) {
-        if (sourceType == EntityType.PLAYER) {
+        if (sourceType == EntityTypes.PLAYER) {
             return globalBlocks();
         }
         return blocks.getOrDefault(sourceType, globalBlocks());

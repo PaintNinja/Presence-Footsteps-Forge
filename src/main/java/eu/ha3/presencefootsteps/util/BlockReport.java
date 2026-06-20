@@ -28,7 +28,7 @@ public interface BlockReport {
 
     static CompletableFuture<?> execute(UnsafeConsumer<Path> action, String baseName, String ext) {
         Minecraft client = Minecraft.getInstance();
-        ChatComponent hud = client.gui.getChat();
+        ChatComponent hud = client.gui.hud.getChat();
         return CompletableFuture.supplyAsync(() -> {
             try {
                 Path loc = getUniqueFileName(GamePaths.getGameDirectory().resolve("presencefootsteps"), baseName, ext);

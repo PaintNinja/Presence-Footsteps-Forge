@@ -142,11 +142,11 @@ class PFOptionsScreen extends GameGui {
         content.addButton(new Label(wideLeft, row += 25)).getStyle().setText("menu.pf.group.sound_packs");
 
         content.addButton(new Button(wideLeft, row += 25, 150, 20).onClick(_ -> {
-            minecraft.setScreen(new PackSelectionScreen(
+            minecraft.gui.setScreen(new PackSelectionScreen(
                     minecraft.getResourcePackRepository(),
                     repo -> {
                         minecraft.options.loadSelectedResourcePacks(repo);
-                        minecraft.setScreen(this);
+                        minecraft.gui.setScreen(this);
                     },
                     minecraft.getResourcePackDirectory(),
                     Component.translatable("resourcePack.title")

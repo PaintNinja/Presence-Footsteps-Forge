@@ -40,6 +40,8 @@ public class PresenceFootsteps implements ClientModInitializer {
 
     public static final Component MOD_NAME = Component.translatable("mod.presencefootsteps.name");
 
+    public static final SystemToast.SystemToastId PF_TOGGLED_TOAST_ID = new SystemToast.SystemToastId();
+
     public static Identifier id(String name) {
         return Identifier.fromNamespaceAndPath(MODID, name);
     }
@@ -118,16 +120,16 @@ public class PresenceFootsteps implements ClientModInitializer {
     }
 
     private void onTick(Minecraft client) {
-        if (client.screen instanceof PFOptionsScreen screen && configChanged.getAndSet(false)) {
+        if (client.gui.screen() instanceof PFOptionsScreen screen && configChanged.getAndSet(false)) {
             screen.init(screen.width, screen.height);
         }
 
         debugToggle.accept(GameGui.isKeyDown(InputConstants.KEY_F3) && debugToggleKeyBinding.isDown());
 
         Optional.ofNullable(client.player).filter(e -> !e.isRemoved()).ifPresent(cameraEntity -> {
-            if (client.screen == null) {
+            if (client.gui.screen() == null) {
                 if (optionsKeyBinding.isDown()) {
-                    client.setScreen(new PFOptionsScreen(client.screen));
+                    client.gui.setScreen(new PFOptionsScreen(client.gui.screen()));
                 }
                 toggler.accept(toggleKeyBinding.isDown());
             }
@@ -150,6 +152,6 @@ public class PresenceFootsteps implements ClientModInitializer {
 
     public void showSystemToast(Component title, Component body) {
         Minecraft client = Minecraft.getInstance();
-        client.getToastManager().addToast(SystemToast.multiline(client, SystemToast.SystemToastId.PACK_LOAD_FAILURE, title, body));
+        SystemToast.addOrUpdate(client.gui.toastManager(), PF_TOGGLED_TOAST_ID, title, body);
     }
 }
