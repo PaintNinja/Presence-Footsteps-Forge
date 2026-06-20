@@ -5,7 +5,6 @@ import java.util.Optional;
 import eu.ha3.presencefootsteps.PresenceFootsteps;
 import eu.ha3.presencefootsteps.sound.generator.Locomotion;
 import eu.ha3.presencefootsteps.sound.generator.StepSoundGenerator;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
@@ -38,9 +37,7 @@ public interface StepSoundSource {
         @Override
         public boolean isStepBlocked() {
             SoundEngine engine = PresenceFootsteps.getInstance().getEngine();
-            if (!Minecraft.getInstance().isLocalServer() && Minecraft.getInstance().hasSingleplayerServer()) {
-                return true;// Allow footsteps when in lan and multiplayer
-            }
+
             if (!engine.getConfig().isExclusiveMode() && !(entity instanceof Player)) {
                 return false;
             }
