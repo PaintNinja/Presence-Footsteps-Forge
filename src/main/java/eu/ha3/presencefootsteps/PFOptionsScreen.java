@@ -201,7 +201,7 @@ class PFOptionsScreen extends GameGui {
                 .setEnabled(minecraft.level != null)
                 .getStyle()
                     .setText("menu.pf.report.acoustics")
-                    .setTooltip("menu.pf.report-acoustics.tooltip");
+                    .setTooltip("menu.pf.report.acoustics.tooltip");
 
         addButton(new Button(left, height - 25)
             .onClick(_ -> finish())).getStyle()
