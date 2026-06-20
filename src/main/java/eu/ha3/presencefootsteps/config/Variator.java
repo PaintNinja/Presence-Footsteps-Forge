@@ -3,6 +3,7 @@ package eu.ha3.presencefootsteps.config;
 /**
  * Configurable variables used by the solver.
  */
+@SuppressWarnings("deprecation")
 public class Variator extends JsonFile {
     /**
      * The maximum time a player can me immobile before PF picks it up as stopped

@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import eu.ha3.presencefootsteps.config.JsonFile;
 
+@SuppressWarnings("deprecation")
 public class UpdaterConfig extends JsonFile {
     /**
      * Whether to check for updates

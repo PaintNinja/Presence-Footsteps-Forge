@@ -17,6 +17,7 @@ import eu.ha3.presencefootsteps.PresenceFootsteps;
  *
  * @author Sollace
  */
+@Deprecated
 public abstract class JsonFile {
     private transient final Gson gson = new GsonBuilder()
             .registerTypeAdapter(getClass(), (InstanceCreator<JsonFile>)_ -> this)
@@ -25,12 +26,15 @@ public abstract class JsonFile {
 
     private transient Path file;
 
+    @Deprecated
     JsonFile() {}
 
+    @Deprecated
     public JsonFile(Path file) {
         this.file = file;
     }
 
+    @Deprecated
     public final void load() {
         if (Files.isReadable(file)) {
             try (Reader reader = Files.newBufferedReader(file)) {
@@ -43,10 +47,12 @@ public abstract class JsonFile {
         save();
     }
 
+    @Deprecated
     public final void load(Reader reader) {
         gson.fromJson(reader, getClass());
     }
 
+    @Deprecated
     public final void save() {
         try {
             Files.createDirectories(file.getParent());

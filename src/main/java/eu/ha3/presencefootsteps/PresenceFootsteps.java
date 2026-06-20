@@ -105,6 +105,7 @@ public class PresenceFootsteps implements ClientModInitializer {
         return updater;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onInitializeClient() {
         updaterConfig.load();
