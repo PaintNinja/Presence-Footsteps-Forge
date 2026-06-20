@@ -23,7 +23,6 @@ import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
@@ -31,8 +30,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.profiling.Profiler;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.Entity;
@@ -48,14 +45,6 @@ import eu.ha3.presencefootsteps.world.PFSolver;
 
 public class SoundEngine implements PreparableReloadListener {
     public static final Identifier ID = PresenceFootsteps.id("sounds");
-    private static final Set<Identifier> BLOCKED_PLAYER_SOUNDS = Set.of(
-            SoundEvents.PLAYER_SWIM.location(),
-            SoundEvents.PLAYER_SPLASH.location(),
-            SoundEvents.PLAYER_BIG_FALL.location(),
-            SoundEvents.PLAYER_SMALL_FALL.location(),
-            SoundEvents.PLAYER_SPLASH_HIGH_SPEED.location()
-    );
-
     private Isolator isolator = new Isolator(this);
     private final Solver solver = new PFSolver(this);
     final ImmediateSoundPlayer soundPlayer = new ImmediateSoundPlayer(this);
@@ -186,17 +175,25 @@ public class SoundEngine implements PreparableReloadListener {
 
     public boolean onSoundRecieved(ClientboundSoundPacket packet) {
         @Nullable Holder<SoundEvent> event = packet.getSound();
-        @Nullable ClientLevel world = Minecraft.getInstance().level;
 
-        if (world == null || event == null || !isActive(Minecraft.getInstance())) {
+        if (event == null || !isActive(Minecraft.getInstance())) {
             return false;
         }
 
-        var stepAtPos = world.getBlockState(BlockPos.containing(packet.getX(), packet.getY() - 1, packet.getZ())).getSoundType().getStepSound();
         var sound = Either.unwrap(event.unwrap().mapBoth(i -> i.identifier(), i -> i.location()));
 
-        return BLOCKED_PLAYER_SOUNDS.contains(sound)
-                || (packet.getSource() == SoundSource.PLAYERS && sound.equals(stepAtPos.location()));
+        // In exclusive mode, if playing sounds for entities, prevent entity sounds from being played from the server
+        if (config.isExclusiveMode() && (
+                (config.preventHorseGallopingSounds.get() && SoundSourceUtil.isHorseGallopingSound(sound))
+                || (config.getEntitySelector().getAffectedSources().contains(packet.getSource()) && SoundSourceUtil.isStepSound(sound))
+        )) {
+            return true;
+        }
+
+        var stepAtPos = SoundSourceUtil.getStepSoundAtPosition(BlockPos.containing(packet.getX(), packet.getY() - 1, packet.getZ()));
+
+        // In multiplayer prevent step sounds from other players from being played
+        return SoundSourceUtil.isPlayerStepSound(packet.getSource(), sound, stepAtPos);
     }
 
     @Override
