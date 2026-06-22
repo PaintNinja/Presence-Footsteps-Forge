@@ -29,6 +29,7 @@ public class PFConfig extends JsonFile {
     private boolean footwear = true;
     private boolean visualiser = false;
     private boolean exclusive = false;
+    public boolean preventHorseGallopingSounds = false;
 
     private Locomotion stance = Locomotion.NONE;
     private EntitySelector targetEntities = EntitySelector.ALL;
