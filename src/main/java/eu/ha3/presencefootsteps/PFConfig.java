@@ -64,6 +64,8 @@ public class PFConfig extends Config {
             .addComment("Enables a visualiser to show where sound/material checks are occuring");
     private final Setting<Boolean> exclusive = value("sound", "exclusive", false)
             .addComment("Sets whether to block vanilla footstep sounds when generating sounds for other entities or players");
+    public final Setting<Boolean> preventHorseGallopingSounds = value("sound", "preventHorseGallopingSounds", false)
+            .addComment("Disables the vanilla horse galloping sounds when riding a horse");
 
     private final Setting<Locomotion> stance = value("client", "stance", Locomotion.NONE)
             .addComment("Sets the player's own stance (type of footsteps to generate")
