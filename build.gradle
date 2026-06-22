@@ -58,15 +58,15 @@ dependencies {
     api fabricApi.module("fabric-block-api-v1", project.fabric_version)
     api fabricApi.module("fabric-transitive-access-wideners-v1", project.fabric_version)
 
-    api "com.minelittlepony:kirin:${project.kirin_version}"
+    api "com.minelittlepony:kirin:${project.kirin_version}", { exclude group: "net.fabricmc.fabric-api" }
     include "com.minelittlepony:kirin:${project.kirin_version}"
 
     if (project.use_minelp == '1') {
-      compileOnly "com.minelittlepony:minelittlepony:${project.minelp_version}"
+      compileOnly "com.minelittlepony:minelittlepony:${project.minelp_version}", { exclude group: "net.fabricmc.fabric-api" }
     } else {
-      compileOnly "com.minelittlepony:minelittlepony:${project.minelp_version}:api"
+      compileOnly "com.minelittlepony:minelittlepony:${project.minelp_version}:api", { exclude group: "net.fabricmc.fabric-api" }
     }
-    compileOnly("com.terraformersmc:modmenu:${project.modmenu_version}")
+    compileOnly("com.terraformersmc:modmenu:${project.modmenu_version}", { exclude group: "net.fabricmc.fabric-api" })
 }
 
 processResources {
