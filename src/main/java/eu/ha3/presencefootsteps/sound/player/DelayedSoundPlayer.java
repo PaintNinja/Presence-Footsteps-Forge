@@ -73,17 +73,18 @@ public class DelayedSoundPlayer implements SoundPlayer {
             this.pitch = pitch;
             this.options = options;
             maximum = options.containsKey("skippable") ? -1L : (long)options.get("delay_max");
-            timeToPlay = System.currentTimeMillis() + Math.max(MathUtil.randAB(getRNG(),
+            timeToPlay = System.currentTimeMillis() + MathUtil.randAB(getRNG(),
                     (long)options.get("delay_min"),
                     (long)options.get("delay_max")
-            ), nextPlayTime);
+            );
+            nextPlayTime = Math.min(nextPlayTime, timeToPlay);
         }
 
         public boolean tick() {
             switch (nextState(currentTime)) {
                 case PLAYING:
                     immediate.playSound(location, soundName, volume, pitch, options);
-                    return false;
+                    return true;
                 case SKIPPING:
                     return true;
                 default:

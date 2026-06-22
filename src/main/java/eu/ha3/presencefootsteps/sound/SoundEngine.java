@@ -22,7 +22,6 @@ import eu.ha3.presencefootsteps.world.Solver;
 import eu.ha3.presencefootsteps.world.PFSolver;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -36,9 +35,7 @@ import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.resource.ResourceManager;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
@@ -49,13 +46,6 @@ import net.minecraft.util.profiler.Profilers;
 
 public class SoundEngine implements IdentifiableResourceReloadListener {
     private static final Identifier ID = PresenceFootsteps.id("sounds");
-    private static final Set<Identifier> BLOCKED_PLAYER_SOUNDS = Set.of(
-            SoundEvents.ENTITY_PLAYER_SWIM.id(),
-            SoundEvents.ENTITY_PLAYER_SPLASH.id(),
-            SoundEvents.ENTITY_PLAYER_BIG_FALL.id(),
-            SoundEvents.ENTITY_PLAYER_SMALL_FALL.id()
-    );
-
     private Isolator isolator = new Isolator(this);
     private final Solver solver = new PFSolver(this);
     final ImmediateSoundPlayer soundPlayer = new ImmediateSoundPlayer(this);
@@ -186,17 +176,25 @@ public class SoundEngine implements IdentifiableResourceReloadListener {
 
     public boolean onSoundRecieved(PlaySoundS2CPacket packet) {
         @Nullable RegistryEntry<SoundEvent> event = packet.getSound();
-        @Nullable ClientWorld world = MinecraftClient.getInstance().world;
 
-        if (world == null || event == null || !isActive(MinecraftClient.getInstance())) {
+        if (event == null || !isActive(MinecraftClient.getInstance())) {
             return false;
         }
 
-        var stepAtPos = world.getBlockState(BlockPos.ofFloored(packet.getX(), packet.getY() - 1, packet.getZ())).getSoundGroup().getStepSound();
         var sound = Either.unwrap(event.getKeyOrValue().mapBoth(i -> i.getValue(), i -> i.id()));
 
-        return BLOCKED_PLAYER_SOUNDS.contains(sound)
-                || (packet.getCategory() == SoundCategory.PLAYERS && sound.equals(stepAtPos.id()));
+        // In exclusive mode, if playing sounds for entities, prevent entity sounds from being played from the server
+        if (config.isExclusiveMode() && (
+                (config.preventHorseGallopingSounds && SoundSourceUtil.isHorseGallopingSound(sound))
+                || (config.getEntitySelector().getAffectedSources().contains(packet.getCategory()) && SoundSourceUtil.isStepSound(sound))
+        )) {
+            return true;
+        }
+
+        var stepAtPos = SoundSourceUtil.getStepSoundAtPosition(BlockPos.ofFloored(packet.getX(), packet.getY() - 1, packet.getZ()));
+
+        // In multiplayer prevent step sounds from other players from being played
+        return SoundSourceUtil.isPlayerStepSound(packet.getCategory(), sound, stepAtPos);
     }
 
     @Override
