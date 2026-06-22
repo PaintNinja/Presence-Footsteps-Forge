@@ -52,7 +52,7 @@
     "menu.pf.report.concise": "Relatório conciso",
     "menu.pf.report.concise.tooltip": "Mostra quais entradas com mapeamento de som ausente estão sendo usadas por todos os blocos e entidades no jogo.",
     "menu.pf.report.acoustics": "Exportar acústicas",
-    "menu.pf.report-acoustics.tooltip": "Exporta o arquivo de acústicas no formato atual. Use isso para atualizar seu pacote de recursos.",
+    "menu.pf.report.acoustics.tooltip": "Exporta o arquivo de acústicas no formato atual. Use isso para atualizar seu pacote de recursos.",
     "menu.pf.group.volume": "Volume",
     "menu.pf.group.footsteps": "Passos",
     "menu.pf.group.debugging": "Depuração",

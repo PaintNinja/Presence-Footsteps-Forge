@@ -186,7 +186,8 @@ class PFOptionsScreen extends GameGui {
                 }))
                 .setEnabled(client.world != null)
                 .getStyle()
-                    .setText("menu.pf.report.acoustics");
+                    .setText("menu.pf.report.acoustics")
+                    .setTooltip("menu.pf.report.acoustics.tooltip");
 
         addButton(new Button(left, height - 25)
             .onClick(sender -> finish())).getStyle()
