@@ -129,6 +129,13 @@ public class PFConfig extends Config {
         return loco;
     }
 
+    public void setVisualiserRunning(boolean enabled) {
+        if (enabled != isVisualiserRunning()) {
+            visualiser.set(enabled);
+            save();
+        }
+    }
+
     public boolean isVisualiserRunning() {
         return visualiser.get();
     }

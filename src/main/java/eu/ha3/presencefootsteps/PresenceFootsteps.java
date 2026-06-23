@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.debug.DebugEntryNoop;
 import net.minecraft.client.gui.components.debug.DebugScreenEntries;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.network.chat.Component;
@@ -123,6 +124,7 @@ public class PresenceFootsteps implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(this::onTick);
         ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloadListener(SoundEngine.ID, engine);
         DebugScreenEntries.register(PFDebugHud.ID, debugHud);
+        DebugScreenEntries.register(SoundEngine.DEBUG_VISUALISER_ID, new DebugEntryNoop());
     }
 
     private void onTick(Minecraft client) {
@@ -131,6 +133,7 @@ public class PresenceFootsteps implements ClientModInitializer {
         }
 
         debugToggle.accept(client.options.keyDebugModifier.isDown() && debugToggleKeyBinding.isDown());
+        config.setVisualiserRunning(client.debugEntries.isCurrentlyEnabled(SoundEngine.DEBUG_VISUALISER_ID));
 
         Optional.ofNullable(client.player).filter(e -> !e.isRemoved()).ifPresent(cameraEntity -> {
             if (client.gui.screen() == null) {

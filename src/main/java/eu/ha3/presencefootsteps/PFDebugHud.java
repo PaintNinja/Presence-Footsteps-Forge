@@ -28,7 +28,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 
 public class PFDebugHud implements DebugScreenEntry {
-    public static final Identifier ID = PresenceFootsteps.id("hud");
+    public static final Identifier ID = PresenceFootsteps.id("presence_footsteps_sounds");
 
     private final SoundEngine engine;
 

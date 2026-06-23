@@ -45,6 +45,7 @@ import eu.ha3.presencefootsteps.world.PFSolver;
 
 public class SoundEngine implements PreparableReloadListener {
     public static final Identifier ID = PresenceFootsteps.id("sounds");
+    public static final Identifier DEBUG_VISUALISER_ID = PresenceFootsteps.id("presence_footsteps_sound_visualiser");
     private Isolator isolator = new Isolator(this);
     private final Solver solver = new PFSolver(this);
     final ImmediateSoundPlayer soundPlayer = new ImmediateSoundPlayer(this);
