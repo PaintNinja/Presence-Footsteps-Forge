@@ -10,13 +10,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.debug.DebugScreenEntries;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
-import com.minelittlepony.common.client.gui.GameGui;
 import com.minelittlepony.common.util.GamePaths;
 import com.mojang.blaze3d.platform.InputConstants;
 
@@ -67,7 +67,7 @@ public class PresenceFootsteps implements ClientModInitializer {
 
     private final KeyMapping optionsKeyBinding = new KeyMapping("key.presencefootsteps.settings", InputConstants.Type.KEYSYM, InputConstants.KEY_F10, KEY_BINDING_CATEGORY);
     private final KeyMapping toggleKeyBinding = new KeyMapping("key.presencefootsteps.toggle", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, KEY_BINDING_CATEGORY);
-    private final KeyMapping debugToggleKeyBinding = new KeyMapping("key.presencefootsteps.debug_toggle", InputConstants.Type.KEYSYM, InputConstants.KEY_Z, KEY_BINDING_CATEGORY);
+    private final KeyMapping debugToggleKeyBinding = new KeyMapping("key.presencefootsteps.debug_toggle", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, KEY_BINDING_CATEGORY, -1);
     private final Edge toggler = new Edge(z -> {
         if (z) {
             config.toggleDisabled();
@@ -75,7 +75,12 @@ public class PresenceFootsteps implements ClientModInitializer {
     });
     private final Edge debugToggle = new Edge(z -> {
         if (z) {
-            Minecraft.getInstance().debugEntries.toggleStatus(PFDebugHud.ID);
+            boolean status = Minecraft.getInstance().debugEntries.toggleStatus(PFDebugHud.ID);
+            if (status) {
+                Minecraft.getInstance().player.sendSystemMessage(
+                        Component.translatable("pf.debug.toggled", Minecraft.getInstance().options.keyDebugModifier.getTranslatedKeyMessage(), debugToggleKeyBinding.getTranslatedKeyMessage()).withColor(TextColor.YELLOW)
+                );
+            }
         }
     });
 
@@ -125,7 +130,7 @@ public class PresenceFootsteps implements ClientModInitializer {
             screen.init(screen.width, screen.height);
         }
 
-        debugToggle.accept(GameGui.isKeyDown(InputConstants.KEY_F3) && debugToggleKeyBinding.isDown());
+        debugToggle.accept(client.options.keyDebugModifier.isDown() && debugToggleKeyBinding.isDown());
 
         Optional.ofNullable(client.player).filter(e -> !e.isRemoved()).ifPresent(cameraEntity -> {
             if (client.gui.screen() == null) {
