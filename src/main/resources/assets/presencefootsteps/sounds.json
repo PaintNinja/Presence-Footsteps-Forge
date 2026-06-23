@@ -298,6 +298,57 @@
       "presencefootsteps:gravel/gravel_wander3"
     ]
   },
+  "pf_presence.sulfur.sulfur_land": {
+    "category": "master",
+    "subtitle": "subtitles.pf.sulfur.crunch",
+    "sounds": [
+      "presencefootsteps:gravel/gravel_land1",
+      "presencefootsteps:gravel/gravel_land2"
+    ]
+  },
+  "pf_presence.sulfur.sulfur_run": {
+    "category": "master",
+    "subtitle": "subtitles.pf.sulfur.crunch",
+    "sounds": [
+      "presencefootsteps:gravel/gravel_run1",
+      "presencefootsteps:gravel/gravel_run10",
+      "presencefootsteps:gravel/gravel_run11",
+      "presencefootsteps:gravel/gravel_run2",
+      "presencefootsteps:gravel/gravel_run3",
+      "presencefootsteps:gravel/gravel_run4",
+      "presencefootsteps:gravel/gravel_run5",
+      "presencefootsteps:gravel/gravel_run6",
+      "presencefootsteps:gravel/gravel_run7",
+      "presencefootsteps:gravel/gravel_run8",
+      "presencefootsteps:gravel/gravel_run9"
+    ]
+  },
+  "pf_presence.sulfur.sulfur_walk": {
+    "category": "master",
+    "subtitle": "subtitles.pf.sulfur.crunch",
+    "sounds": [
+      "presencefootsteps:gravel/gravel_walk1",
+      "presencefootsteps:gravel/gravel_walk10",
+      "presencefootsteps:gravel/gravel_walk11",
+      "presencefootsteps:gravel/gravel_walk2",
+      "presencefootsteps:gravel/gravel_walk3",
+      "presencefootsteps:gravel/gravel_walk4",
+      "presencefootsteps:gravel/gravel_walk5",
+      "presencefootsteps:gravel/gravel_walk6",
+      "presencefootsteps:gravel/gravel_walk7",
+      "presencefootsteps:gravel/gravel_walk8",
+      "presencefootsteps:gravel/gravel_walk9"
+    ]
+  },
+  "pf_presence.sulfur.sulfur_wander": {
+    "category": "master",
+    "subtitle": "subtitles.pf.sulfur.crunch",
+    "sounds": [
+      "presencefootsteps:gravel/gravel_wander1",
+      "presencefootsteps:gravel/gravel_wander2",
+      "presencefootsteps:gravel/gravel_wander3"
+    ]
+  },
   "pf_presence.leaves.leaves_through": {
     "category": "master",
     "subtitle": "subtitles.pf.leaves_rustle",

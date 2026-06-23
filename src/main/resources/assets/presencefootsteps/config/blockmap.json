@@ -123,6 +123,48 @@
 	"minecraft:stripped_cherry_wood": "wood,stone",
 	"minecraft:stripped_pale_oak_wood": "softwood,stone",
 
+	"minecraft:sulfur": "sulfur",
+	"minecraft:potent_sulfur": "potentsulfur",
+	"minecraft:sulfur_slab": "sulfur",
+	"minecraft:sulfur_stairs": "sulfur",
+	"minecraft:sulfur_wall": "NOT_EMITTER",
+	"minecraft:sulfur_wall.bigger": "sulfur",
+
+	"minecraft:polished_sulfur": "marble,sulfur",
+	"minecraft:polished_sulfur_slab": "marble,sulfur",
+	"minecraft:polished_sulfur_stairs": "marble,sulfur",
+	"minecraft:polished_sulfur_wall": "NOT_EMITTER",
+	"minecraft:polished_sulfur_wall.bigger": "marble,sulfur",
+	"minecraft:chiseled_sulfur": "marble,sulfur",
+
+	"minecraft:sulfur_bricks": "brickstone,sulfur",
+	"minecraft:sulfur_brick_slab": "brickstone,sulfur",
+	"minecraft:sulfur_brick_stairs": "brickstone,sulfur",
+	"minecraft:sulfur_brick_wall": "NOT_EMITTER",
+	"minecraft:sulfur_brick_wall.bigger": "brickstone,sulfur",
+
+	"minecraft:sulfur_spike": "ore,sulfur",
+	"minecraft:sulfur_spike.foliage": "ore,sulfur",
+
+	"minecraft:cinnabar": "sandstone",
+	"minecraft:cinnabar_slab": "sandstone",
+	"minecraft:cinnabar_stairs": "sandstone",
+	"minecraft:cinnabar_wall": "NOT_EMITTER",
+	"minecraft:cinnabar_wall.bigger": "sandstone",
+
+	"minecraft:polished_cinnabar": "marble,sandstone",
+	"minecraft:polished_cinnabar_slab": "marble,sandstone",
+	"minecraft:polished_cinnabar_stairs": "marble,sandstone",
+	"minecraft:polished_cinnabar_wall": "NOT_EMITTER",
+	"minecraft:polished_cinnabar_wall.bigger": "marble,sandstone",
+	"minecraft:chiseled_cinnabar": "marble,sandstone",
+
+	"minecraft:cinnabar_bricks": "brickstone,sandstone",
+	"minecraft:cinnabar_brick_slab": "brickstone,sandstone",
+	"minecraft:cinnabar_brick_stairs": "brickstone,sandstone",
+	"minecraft:cinnabar_brick_wall": "NOT_EMITTER",
+	"minecraft:cinnabar_brick_wall.bigger": "brickstone,sandstone",
+
 	"minecraft:oak_wood": "wood",
 	"minecraft:spruce_wood": "wood",
 	"minecraft:birch_wood": "wood",

@@ -1,0 +1,90 @@
+{
+  "wander": {
+    "name": "pf_presence.sulfur.sulfur_wander",
+    "volume": {
+      "min": 30.0,
+      "max": 60.0
+    },
+    "pitch": {
+      "min": 110.0,
+      "max": 154.99999
+    },
+    "type": "basic"
+  },
+  "land": [
+    {
+      "name": "pf_presence.sulfur.sulfur_run",
+      "volume": {
+        "min": 30.0,
+        "max": 60.0
+      },
+      "pitch": {
+        "min": 110.0,
+        "max": 154.99999
+      },
+      "type": "basic"
+    },
+    {
+      "name": "pf_presence.sulfur.sulfur_land",
+      "volume": {
+        "min": 10.0,
+        "max": 25.0
+      },
+      "pitch": {
+        "min": 130.0,
+        "max": 174.99999
+      },
+      "type": "basic"
+    },
+    {
+      "name": "pf_presence.sulfur.sulfur_walk",
+      "volume": 30.0,
+      "pitch": {
+        "min": 110.0,
+        "max": 154.99999
+      },
+      "type": "basic"
+    },
+    {
+      "acoustic": {
+        "name": "pf_presence.sulfur.sulfur_run",
+        "volume": {
+          "min": 30.0,
+          "max": 60.0
+        },
+        "pitch": {
+          "min": 110.0,
+          "max": 154.99999
+        },
+        "type": "basic"
+      },
+      "delay": 50,
+      "type": "delayed"
+    }
+  ],
+  "walk": {
+    "name": "pf_presence.sulfur.sulfur_walk",
+    "volume": {
+      "min": 30.0,
+      "max": 60.0
+    },
+    "pitch": {
+      "min": 110.0,
+      "max": 154.99999
+    },
+    "type": "basic"
+  },
+  "run": {
+    "name": "pf_presence.sulfur.sulfur_run",
+    "volume": {
+      "min": 30.0,
+      "max": 60.0
+    },
+    "pitch": {
+      "min": 110.0,
+      "max": 154.99999
+    },
+    "type": "basic"
+  },
+  "type": "events"
+}
