@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 
 import org.jetbrains.annotations.Nullable;
@@ -26,7 +25,6 @@ import com.minelittlepony.common.client.gui.element.Slider;
 import com.minelittlepony.common.client.gui.element.Toggle;
 import com.mojang.serialization.JsonOps;
 
-import eu.ha3.mc.quick.update.Versions;
 import eu.ha3.presencefootsteps.config.VolumeOption;
 import eu.ha3.presencefootsteps.sound.acoustics.Acoustic;
 import eu.ha3.presencefootsteps.sound.acoustics.AcousticsFile;
@@ -39,7 +37,6 @@ import net.minecraft.network.chat.Component;
 
 class PFOptionsScreen extends GameGui {
     public static final Component TITLE = Component.translatable("menu.pf.title");
-    public static final Component UP_TO_DATE = Component.translatable("pf.update.up_to_date");
     public static final Component VOLUME_MIN = Component.translatable("menu.pf.volume.min");
 
     private final ScrollContainer content = new ScrollContainer();
@@ -72,12 +69,6 @@ class PFOptionsScreen extends GameGui {
         getChildElements().add(content);
 
         addButton(new Label(width / 2, 10)).setCentered().getStyle().setText(getTitle());
-
-        redrawUpdateButton(addButton(new Button(width - 30, height - 25, 25, 20)).onClick(sender -> {
-            sender.setEnabled(false);
-            sender.getStyle().setTooltip("pf.update.checking");
-            PresenceFootsteps.getInstance().getUpdateChecker().checkNow().thenAccept(_ -> redrawUpdateButton(sender));
-        }));
 
         Toggle disabledToggle = new Toggle(wideLeft, row, config.getDisabled());
         content.addButton(disabledToggle.onChange(disabled -> {
@@ -224,21 +215,6 @@ class PFOptionsScreen extends GameGui {
                 button.setEnabled(!disabled);
             }
         });
-    }
-
-    private void redrawUpdateButton(Button button) {
-        Optional<Versions> versions = PresenceFootsteps.getInstance().getUpdateChecker().getNewer();
-        boolean hasUpdate = versions.isPresent();
-        button.setEnabled(true);
-        button.getStyle()
-           .setText(hasUpdate ? "🙁" : "🙂")
-           .setColor(hasUpdate ? 0xFF0000 : 0xFFFFFF)
-           .setTooltip(versions
-                   .map(Versions::latest)
-                   .map(latest -> (Component)Component.translatable("pf.update.updates_available",
-                           latest.version().getFriendlyString(),
-                           latest.minecraft().getFriendlyString()))
-                   .orElse(UP_TO_DATE));
     }
 
     private Component formatVolume(AbstractSlider<Float> slider) {

@@ -20,15 +20,12 @@ import com.minelittlepony.common.client.gui.GameGui;
 import com.minelittlepony.common.util.GamePaths;
 import com.mojang.blaze3d.platform.InputConstants;
 
-import eu.ha3.mc.quick.update.UpdateChecker;
-import eu.ha3.mc.quick.update.UpdaterConfig;
 import eu.ha3.presencefootsteps.sound.SoundEngine;
 import eu.ha3.presencefootsteps.util.Edge;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.packs.PackType;
 
 public class PresenceFootsteps implements ClientModInitializer {
@@ -54,14 +51,6 @@ public class PresenceFootsteps implements ClientModInitializer {
     private final PFConfig config = new PFConfig(pfFolder.resolve("userconfig.json"), this);
     private final SoundEngine engine = new SoundEngine(config);
     private final PFDebugHud debugHud = new PFDebugHud(engine);
-
-    private final UpdaterConfig updaterConfig = new UpdaterConfig(pfFolder.resolve("updater.json"));
-    private final UpdateChecker updater = new UpdateChecker(updaterConfig, MODID, UPDATER_ENDPOINT, (newVersion, _) -> {
-        showSystemToast(
-                Component.translatable("pf.update.title"),
-                Component.translatable("pf.update.text", newVersion.version().getFriendlyString(), newVersion.minecraft().getFriendlyString())
-        );
-    });
 
     private final KeyMapping optionsKeyBinding = new KeyMapping("key.presencefootsteps.settings", InputConstants.Type.KEYSYM, InputConstants.KEY_F10, KEY_BINDING_CATEGORY);
     private final KeyMapping toggleKeyBinding = new KeyMapping("key.presencefootsteps.toggle", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, KEY_BINDING_CATEGORY);
@@ -99,13 +88,8 @@ public class PresenceFootsteps implements ClientModInitializer {
         return optionsKeyBinding;
     }
 
-    public UpdateChecker getUpdateChecker() {
-        return updater;
-    }
-
     @Override
     public void onInitializeClient() {
-        updaterConfig.load();
         config.load();
         config.onChangedExternally(_ -> configChanged.set(true));
 
@@ -133,10 +117,6 @@ public class PresenceFootsteps implements ClientModInitializer {
             }
 
             engine.onFrame(client, cameraEntity);
-
-            if (!FabricLoader.getInstance().isModLoaded("modmenu")) {
-                updater.attempt();
-            }
         });
     }
 
