@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'idea'
     id 'eclipse'
-    id 'net.minecraftforge.gradle' version '[7.0.36,8)'
+    id 'net.minecraftforge.gradle' version '[7.0.38,8)'
 }
 
 java {
