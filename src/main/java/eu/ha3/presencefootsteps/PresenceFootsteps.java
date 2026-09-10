@@ -102,7 +102,7 @@ public class PresenceFootsteps {
 
         TickEvent.ClientTickEvent.Post.BUS.addListener(_ -> onTick(Minecraft.getInstance()));
         RegisterClientReloadListenersEvent.BUS.addListener(event -> event.registerReloadListener(engine));
-//        DebugScreenEntries.register(PFDebugHud.ID, debugHud);
+        DebugScreenEntries.register(PFDebugHud.ID, debugHud);
     }
 
     private void onTick(Minecraft client) {
