@@ -1,10 +1,8 @@
 package eu.ha3.presencefootsteps.sound;
 
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.stream.Stream;
@@ -19,10 +17,13 @@ import eu.ha3.presencefootsteps.sound.acoustics.AcousticsJsonParser;
 import eu.ha3.presencefootsteps.sound.generator.Locomotion;
 import eu.ha3.presencefootsteps.util.PlayerUtil;
 import eu.ha3.presencefootsteps.util.ResourceUtils;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -31,6 +32,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.FlyingMob;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.WaterAnimal;
@@ -116,12 +118,17 @@ public class SoundEngine implements PreparableReloadListener {
         if (entities.size() < config.getMaxSteppingEntities()) {
             return entities.stream();
         }
-        Set<Integer> alreadyVisited = new HashSet<>();
+        IntSet alreadyVisited = new IntOpenHashSet();
         return entities.stream()
             .sorted(nearest)
                     // Always play sounds for players and the entities closest to the camera
                         // If multiple entities share the same block, only play sounds for one of each distinct type
-            .filter(e -> e == cameraEntity || e instanceof Player || (alreadyVisited.size() < config.getMaxSteppingEntities() && alreadyVisited.add(Objects.hash(e.getType(), e.blockPosition()))));
+            .filter(e -> e == cameraEntity || e instanceof Player || (alreadyVisited.size() < config.getMaxSteppingEntities() && alreadyVisited.add(getVisitKey(e.getType(), e.blockPosition()))));
+    }
+
+    // Same value as Objects.hash(type, pos) without the varargs array and the boxed key
+    private static int getVisitKey(EntityType<?> type, BlockPos pos) {
+        return 31 * (31 + Objects.hashCode(type)) + Objects.hashCode(pos);
     }
 
     public void onFrame(Minecraft client, Entity cameraEntity) {
