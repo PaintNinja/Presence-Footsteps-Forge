@@ -5,6 +5,7 @@ import eu.ha3.presencefootsteps.sound.SoundEngine;
 import eu.ha3.presencefootsteps.util.PlayerUtil;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.client.player.RemotePlayer;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -40,7 +41,7 @@ public class PFSolver implements Solver {
             state = collidable.getCollidedStateAt(pos);
         }
 
-        return state.getAppearance(world, pos, Direction.UP, state, pos);
+        return state.getAppearance((BlockAndTintGetter) world, pos, Direction.UP, state, pos);
     }
 
     private AABB getCollider(Entity player) {
